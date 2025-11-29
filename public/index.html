@@ -12,7 +12,7 @@
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-primary); height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* AUTH & UI */
+        /* AUTH */
         #auth-screen, #room-pass-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .auth-container { width: 90%; max-width: 350px; text-align: center; }
         .auth-tabs { display: flex; justify-content: center; margin-bottom: 20px; border-bottom: 1px solid #333; }
@@ -36,21 +36,11 @@
         .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(0, 168, 132, 0.4); }
         .circle-btn.screen-active { background: #3498db; color: white; box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); }
 
-        /* USER LIST POPUP */
-        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
-        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); cursor: pointer; }
-        #user-list-content li:hover { background: rgba(255,255,255,0.05); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
-        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
-        .media-icons { margin-left: auto; display: flex; gap: 5px; }
-
-        /* VIDEO */
+        /* VIDEO AREA */
         #video-container { background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; }
         #video-container.visible { height: 140px; border-bottom: 1px solid #333; }
         #video-grid { display: flex; overflow-x: auto; gap: 8px; height: 100%; padding: 10px; align-items: center; scrollbar-width: none; }
-        video { height: 100%; border-radius: 8px; border: 1px solid #333; min-width: 140px; background: #111; cursor: pointer; }
+        video { height: 100%; border-radius: 8px; border: 1px solid #333; min-width: 140px; background: #111; cursor: pointer; transition: object-fit 0.3s; }
         video.camera-mode { object-fit: cover; } video.screen-mode { object-fit: contain; border-color: #3498db; }
 
         /* CHAT */
@@ -63,13 +53,16 @@
         #voice-msg-btn { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         #voice-msg-btn.recording { background: #e74c3c; animation: pulse 1s infinite; }
 
-        /* MESSAGES & SYSTEM LINKS */
-        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
-        .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
-        .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
-        .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
-        .system-link-btn { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; color: #3498db; text-decoration: none; font-weight: bold; cursor: pointer; border: 1px solid rgba(52, 152, 219, 0.3); }
-        .system-link-btn:active { background: rgba(52, 152, 219, 0.2); }
+        /* LIST & POPUP */
+        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
+        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .offline { color: #777; }
+        .media-icons { margin-left: auto; display: flex; gap: 5px; }
+        .media-icon { font-size: 12px; }
 
         /* FULLSCREEN & CINEMA */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: none; justify-content: center; align-items: center; }
@@ -92,6 +85,15 @@
             body.cinema-mode #chat-wrapper { width: 75%; right: 10px; bottom: 80px; height: 45%; } 
             body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; }
         }
+
+        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
+        .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
+        .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
+        .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
+        .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
+        .system-link-btn { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; color: #3498db; text-decoration: none; font-weight: bold; cursor: pointer; border: 1px solid rgba(52, 152, 219, 0.3); }
+        .system-link-btn:active { background: rgba(52, 152, 219, 0.2); }
+        
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
@@ -199,7 +201,7 @@
 
         const videoGrid = document.getElementById('video-grid');
         const activeCalls = {};
-        const videoElements = {}; // PeerID -> VideoElement
+        const videoElements = {}; 
         
         const myVideo = document.createElement('video');
         myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
@@ -233,8 +235,7 @@
 
         function startChatApp() {
             document.getElementById('main-container').style.display = 'flex';
-            
-            // --- STUN SUNUCULARI ---
+            // STUN SUNUCULARI (Google)
             myPeer = new Peer(undefined, { 
                 path: '/peerjs', 
                 host: location.hostname, 
@@ -265,27 +266,40 @@
                     if (u.screen) iconsHtml += `<i class="fas fa-desktop media-icon" style="color:#3498db"></i>`;
                 }
                 li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> <div class="media-icons">${iconsHtml}</div>`;
-                if(u.online && (u.cam || u.screen)) { li.onclick = () => window.focusUserVideo(u.peerId); }
+                if(u.online && (u.cam || u.screen)) { li.style.cursor = 'pointer'; li.onclick = () => window.focusUserVideo(u.peerId); }
                 list.appendChild(li);
             });
         });
 
+        // --- İZLEME FONKSİYONU (DÜZELTİLDİ) ---
         window.focusUserVideo = function(pid) {
-            if (pid === myPeerId && currentActiveStream) openFullscreen(currentActiveStream);
-            else if (videoElements[pid]) openFullscreen(videoElements[pid].srcObject);
+            // 1. Önce Video Elementlerinde ara
+            if (pid === myPeerId && currentActiveStream) {
+                openFullscreen(currentActiveStream);
+                return;
+            }
+            if (videoElements[pid]) {
+                openFullscreen(videoElements[pid].srcObject);
+                return;
+            }
+            // 2. Bulunamazsa Aktif Aramalardan (Calls) ara
+            if (activeCalls[pid]) {
+                // Yayını bulup açmayı dene
+                const remoteStream = activeCalls[pid].remoteStream;
+                if (remoteStream) openFullscreen(remoteStream);
+                else alert("Video yükleniyor, lütfen bekleyin...");
+            } else {
+                alert("Kullanıcı şu an yayın yapmıyor veya bağlanıyor...");
+            }
         };
 
-        function notifyMediaStatus(c, s) { 
-            socket.emit('media-status', { cam: c, screen: s }); 
-            if (c || s) socket.emit('stream-notify', { type: s ? 'screen' : 'camera', active: true });
-            else socket.emit('stream-notify', { type: 'camera', active: false });
-        }
-
+        function notifyMediaStatus(c, s) { socket.emit('media-status', { cam: c, screen: s }); if(c || s) socket.emit('stream-notify', { type: s?'screen':'camera', active: true }); }
         socket.on('user-stream-changed', ({ peerId, type }) => {
             const video = videoElements[peerId];
             if (video) video.className = (type === 'screen') ? 'screen-mode' : 'camera-mode';
         });
 
+        // MEDIA
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
                 cameraStream = stream;
@@ -333,7 +347,7 @@
         function toggleCamera() {
             if(!cameraStream) return alert("Kamera yok!");
             if(screenStream) stopScreenShare();
-            const v = cameraStream.getVideoTracks()[0]; 
+            const v = cameraStream.getVideoTracks()[0];
             v.enabled = !v.enabled; 
             currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
             const btn = document.getElementById('cam-toggle-btn');
@@ -396,9 +410,11 @@
         }
 
         function openFullscreen(stream) {
-            const v = document.getElementById('fullscreen-video'); v.srcObject = stream;
+            const v = document.getElementById('fullscreen-video'); 
+            v.srcObject = stream;
             document.getElementById('fullscreen-layer').style.display = 'flex';
             document.body.classList.add('cinema-mode');
+            v.play(); // MOBİL İÇİN KRİTİK: Zorla oynat
         }
         function closeFullscreen() {
             document.getElementById('fullscreen-layer').style.display = 'none';
@@ -433,7 +449,6 @@
             const div = document.createElement('div');
             div.className = `message ${isMine ? 'mine' : 'theirs'}`;
             
-            // Link Mesajı mı?
             if (data.type === 'system-link') {
                 div.innerHTML = `<span class="sender-name">${data.user}</span>
                                 <div style="color:var(--text-secondary); font-style:italic;">${data.text}</div>
