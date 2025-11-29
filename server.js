@@ -13,7 +13,6 @@ app.use(express.static('public'));
 const peerServer = ExpressPeerServer(http, { debug: true, path: '/' });
 app.use('/peerjs', peerServer);
 
-// Veritabanı
 const USERS_FILE = './users.json';
 let usersDB = {};
 if (fs.existsSync(USERS_FILE)) { try { usersDB = JSON.parse(fs.readFileSync(USERS_FILE)); } catch(e){} } 
@@ -26,7 +25,6 @@ let onlineSessions = {};
 
 io.on('connection', (socket) => {
     
-    // KAYIT & GİRİŞ
     socket.on('register', (u, p) => {
         if (usersDB[u]) socket.emit('auth-error', 'İsim alınmış.');
         else { usersDB[u] = p; saveUsers(); socket.emit('register-success', 'Kayıt başarılı.'); broadcastUserList(); }
@@ -37,40 +35,15 @@ io.on('connection', (socket) => {
         else socket.emit('auth-error', 'Hatalı bilgiler.');
     });
 
-    // ODA İŞLEMLERİ
     socket.on('join-room', (roomId, peerId, nickname) => {
         socket.join(roomId);
-        onlineSessions[socket.id] = { nickname, peerId, cam: false, screen: false };
+        onlineSessions[socket.id] = { nickname, peerId };
         
         broadcastUserList(roomId);
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // Link Atma Bildirimi
-        socket.on('stream-notify', (data) => {
-            if (onlineSessions[socket.id]) {
-                if (data.type === 'screen') onlineSessions[socket.id].screen = data.active;
-                else onlineSessions[socket.id].cam = data.active;
-            }
-            broadcastUserList(roomId);
-
-            // Sadece AÇILDIĞINDA mesaj at, kapandığında atma
-            if (data.active) {
-                const msgData = {
-                    type: 'system-link',
-                    user: nickname,
-                    text: data.type === 'screen' ? 'Ekranını paylaştı' : 'Kamerasını açtı',
-                    peerId: peerId, 
-                    time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'})
-                };
-                io.to(roomId).emit('createMessage', msgData);
-            }
-            
-            // Görüntü modu değişimi (Contain/Cover ayarı için)
-            socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: data.type, active: data.active });
-        });
-
-        // Mesajlaşma
+        // Mesaj İşleme
         const handleMessage = (type, content) => {
             const msgData = { type, user: nickname, content, senderId: socket.id, time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) };
             messageHistory.push(msgData);
@@ -91,7 +64,7 @@ io.on('connection', (socket) => {
     function broadcastUserList(roomId = "ozel-oda-v1") {
         const allUsers = Object.keys(usersDB).map(username => {
             const session = Object.values(onlineSessions).find(s => s.nickname === username);
-            return session ? { nickname: username, online: true, peerId: session.peerId, cam: session.cam, screen: session.screen } : { nickname: username, online: false };
+            return session ? { nickname: username, online: true, peerId: session.peerId } : { nickname: username, online: false };
         });
         io.to(roomId).emit('update-user-list', allUsers);
     }
