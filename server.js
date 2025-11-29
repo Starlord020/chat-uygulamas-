@@ -6,8 +6,17 @@ const io = require('socket.io')(http, {
     cors: { origin: "*", methods: ["GET", "POST"] },
     maxHttpBufferSize: 1e8 
 });
+// PeerJS Sunucusunu geri getirdik (VDS/Render içinde çalışması için)
+const { ExpressPeerServer } = require('peer');
 
 app.use(express.static('public'));
+
+// PeerJS Ayarları
+const peerServer = ExpressPeerServer(http, {
+    debug: true,
+    path: '/'
+});
+app.use('/peerjs', peerServer);
 
 // Veritabanı
 const USERS_FILE = './users.json';
@@ -40,12 +49,10 @@ io.on('connection', (socket) => {
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // Görüntü türü değişirse (Kamera <-> Ekran)
         socket.on('stream-changed', (type) => {
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
 
-        // Medya durumu (İkonlar için)
         socket.on('media-status', (status) => {
             if (onlineSessions[socket.id]) {
                 onlineSessions[socket.id].cam = status.cam;
