@@ -28,14 +28,14 @@
 <header id="app-header">
 <div class="header-info"><img src="image_0.png" class="header-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'"><div class="header-text"><h3>Mevlüt & Ayşegül</h3><span id="connection-status">Bağlandı</span></div></div>
 <div class="header-actions">
-<button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()" title="Video Alanını Göster/Gizle"><i class="fas fa-eye"></i></button>
+<button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()" title="Video Alanını Göster/Gizle"><i class="fas fa-eye-slash"></i></button>
 <button class="circle-btn" onclick="toggleUserList()" title="Kişiler"><i class="fas fa-users"></i></button>
 <button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()" title="Mikrofon"><i class="fas fa-microphone-slash"></i></button>
 <button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()" title="Kamera"><i class="fas fa-video"></i></button>
 <button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()" title="Ekran Paylaş"><i class="fas fa-desktop"></i></button>
 </div></header>
 <div id="user-list-popup"><h4><i class="fas fa-circle" style="font-size:10px;color:var(--success);margin-right:8px;"></i> Aktif Kişiler</h4><ul id="user-list-content"></ul></div>
-<div id="video-container"><div id="video-grid"></div></div>
+<div id="video-container" class="visible"><div id="video-grid"></div></div>
 <div id="chat-wrapper" onclick="handleWrapperClick()">
 <div id="notification-badge">0</div><div id="minimize-icon"><i class="fas fa-comment-dots"></i></div>
 <div id="floating-header"><span>Sohbet</span><i class="fas fa-chevron-down" id="minimize-btn" onclick="minimizeChat(event)"></i></div>
