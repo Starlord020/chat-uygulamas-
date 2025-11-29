@@ -6,19 +6,13 @@ const io = require('socket.io')(http, {
     cors: { origin: "*", methods: ["GET", "POST"] },
     maxHttpBufferSize: 1e8 
 });
-// PeerJS Sunucusunu geri getirdik (VDS/Render içinde çalışması için)
 const { ExpressPeerServer } = require('peer');
 
 app.use(express.static('public'));
 
-// PeerJS Ayarları
-const peerServer = ExpressPeerServer(http, {
-    debug: true,
-    path: '/'
-});
+const peerServer = ExpressPeerServer(http, { debug: true, path: '/' });
 app.use('/peerjs', peerServer);
 
-// Veritabanı
 const USERS_FILE = './users.json';
 let usersDB = {};
 if (fs.existsSync(USERS_FILE)) { try { usersDB = JSON.parse(fs.readFileSync(USERS_FILE)); } catch(e){} } 
@@ -49,16 +43,29 @@ io.on('connection', (socket) => {
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        socket.on('stream-changed', (type) => {
-            socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
-        });
-
-        socket.on('media-status', (status) => {
+        // --- YENİ: YAYIN BİLDİRİMİ ---
+        socket.on('stream-notify', (data) => {
+            // data: { type: 'screen' | 'camera', active: true/false }
+            if (data.active) {
+                const msgData = {
+                    type: 'system-link',
+                    user: nickname,
+                    text: data.type === 'screen' ? 'Ekranını paylaştı' : 'Kamerasını açtı',
+                    peerId: peerId, // Tıklayınca bu ID'yi izleyeceğiz
+                    time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'})
+                };
+                // Bu bildirimi geçmişe kaydetme, sadece anlık gidenlere göster
+                io.to(roomId).emit('createMessage', msgData);
+            }
+            
+            // Durumu güncelle
             if (onlineSessions[socket.id]) {
-                onlineSessions[socket.id].cam = status.cam;
-                onlineSessions[socket.id].screen = status.screen;
+                if (data.type === 'screen') onlineSessions[socket.id].screen = data.active;
+                else onlineSessions[socket.id].cam = data.active;
                 broadcastUserList(roomId);
             }
+            
+            socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: data.type, active: data.active });
         });
 
         const handleMessage = (type, content) => {
