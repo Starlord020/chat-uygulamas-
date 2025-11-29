@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const fs = require('fs');
-// PeerJS sunucusunu buradan sildik, artık client tarafında globale bağlanacağız.
 const io = require('socket.io')(http, {
     cors: { origin: "*", methods: ["GET", "POST"] },
     maxHttpBufferSize: 1e8 
@@ -35,17 +34,18 @@ io.on('connection', (socket) => {
 
     socket.on('join-room', (roomId, peerId, nickname) => {
         socket.join(roomId);
-        // PeerID artık global sunucudan gelecek
         onlineSessions[socket.id] = { nickname, peerId, cam: false, screen: false };
         
         broadcastUserList(roomId);
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
+        // Görüntü türü değişirse (Kamera <-> Ekran)
         socket.on('stream-changed', (type) => {
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
 
+        // Medya durumu (İkonlar için)
         socket.on('media-status', (status) => {
             if (onlineSessions[socket.id]) {
                 onlineSessions[socket.id].cam = status.cam;
