@@ -7,23 +7,9 @@
     <link rel="manifest" href="/manifest.json">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0b141a;
-            --header-bg: #1f2c34;
-            --chat-bg: #0b141a;
-            --accent: #00a884;
-            --text-primary: #e9edef;
-            --text-secondary: #8696a0;
-            --app-height: 100dvh; 
-        }
-
+        :root { --bg-color: #0b141a; --header-bg: #1f2c34; --chat-bg: #0b141a; --accent: #00a884; --text-primary: #e9edef; --text-secondary: #8696a0; --app-height: 100dvh; }
         * { box-sizing: border-box; }
-        body { 
-            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-color); color: var(--text-primary); 
-            height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; 
-        }
-
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-primary); height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; }
         .hidden { display: none !important; }
 
         /* AUTH */
@@ -51,6 +37,17 @@
         .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(0, 168, 132, 0.4); }
         .circle-btn.screen-active { background: #3498db; color: white; box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); }
 
+        /* USER LIST POPUP */
+        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
+        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .offline { color: #777; }
+        .media-icons { margin-left: auto; display: flex; gap: 5px; }
+        .media-icon { font-size: 12px; }
+
         /* VIDEO AREA */
         #video-container { background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; }
         #video-container.visible { height: 140px; border-bottom: 1px solid #333; }
@@ -76,23 +73,11 @@
         .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
         .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
 
-        /* USER LIST POPUP */
-        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
-        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
-        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
-        .offline { color: #777; }
-        .media-icons { margin-left: auto; display: flex; gap: 5px; }
-        .media-icon { font-size: 12px; }
-
-        /* FULLSCREEN */
+        /* FULLSCREEN & CINEMA MODE */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 5002; }
 
-        /* CINEMA MODE & MINIMIZED CHAT */
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
         #floating-header { display: none; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0,0,0,0.5); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px; cursor: pointer; }
         #notification-badge { position: absolute; top: -5px; right: -5px; background-color: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid #121212; animation: bounce 0.5s; }
@@ -221,7 +206,6 @@
         myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
         myVideo.className = 'camera-mode';
 
-        // --- AUTH ---
         function switchTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -249,19 +233,8 @@
 
         function startChatApp() {
             document.getElementById('main-container').style.display = 'flex';
-            
-            // --- STUN SERVER AYARLARI (KRİTİK) ---
-            myPeer = new Peer(undefined, { 
-                path: '/peerjs', 
-                host: location.hostname, 
-                port: location.port || (location.protocol === 'https:' ? 443 : 80),
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:global.stun.twilio.com:3478' }
-                    ]
-                }
-            });
+            // --- GLOBAL PEERJS SUNUCUSU ---
+            myPeer = new Peer(undefined); // Config yok, otomatik global bulut.
 
             myPeer.on('open', id => { myPeerId = id; socket.emit('join-room', ROOM_ID, myPeerId, myNickname); });
             prepareMedia();
@@ -274,6 +247,7 @@
             else container.classList.remove('visible');
         }
         function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
+        
         socket.on('update-user-list', (users) => {
             const list = document.getElementById('user-list-content'); list.innerHTML = "";
             users.forEach(u => {
@@ -299,7 +273,7 @@
             if (video) video.className = (type === 'screen') ? 'screen-mode' : 'camera-mode';
         });
 
-        // --- MEDIA ---
+        // MEDIA
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
                 cameraStream = stream;
@@ -338,14 +312,12 @@
             const v = cameraStream.getVideoTracks()[0]; const a = cameraStream.getAudioTracks()[0];
             v.enabled = !v.enabled; a.enabled = v.enabled;
             currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
-            
             const btn = document.getElementById('cam-toggle-btn');
             if(v.enabled) { 
                 btn.classList.add('active'); if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId); 
                 notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
             } else { 
-                btn.classList.remove('active'); myVideo.remove(); checkVideoVisibility(); 
-                notifyMediaStatus(false,false); 
+                btn.classList.remove('active'); myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false); 
             }
             replaceTracksForEveryone(cameraStream);
         }
@@ -397,7 +369,6 @@
             checkVideoVisibility();
         }
 
-        // FULLSCREEN
         function openFullscreen(stream) {
             const v = document.getElementById('fullscreen-video'); v.srcObject = stream;
             document.getElementById('fullscreen-layer').style.display = 'flex';
