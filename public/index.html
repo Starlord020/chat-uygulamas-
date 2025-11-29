@@ -18,12 +18,7 @@
         }
 
         * { box-sizing: border-box; }
-        body { 
-            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-color); color: var(--text-primary); 
-            height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; 
-        }
-
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-primary); height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; }
         .hidden { display: none !important; }
 
         /* AUTH */
@@ -45,8 +40,7 @@
         .header-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .header-text h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--text-primary); }
         .header-text span { font-size: 12px; color: var(--accent); }
-        .header-actions { display: flex; gap: 8px; } /* Gap'i biraz azalttım */
-        
+        .header-actions { display: flex; gap: 8px; }
         .circle-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .circle-btn:hover { background: rgba(255,255,255,0.1); }
         .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(0, 168, 132, 0.4); }
@@ -60,7 +54,7 @@
         video.camera-mode { object-fit: cover; }
         video.screen-mode { object-fit: contain; border-color: #3498db; }
 
-        /* CHAT & MAIN */
+        /* CHAT & WRAPPER */
         #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
         #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #chat-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 5px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; opacity: 0.95; }
@@ -70,12 +64,6 @@
         .icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 22px; padding: 8px; cursor: pointer; }
         #voice-msg-btn { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         #voice-msg-btn.recording { background: #e74c3c; animation: pulse 1s infinite; }
-
-        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
-        .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
-        .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
-        .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
-        .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
 
         /* USER LIST POPUP */
         #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -93,6 +81,7 @@
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 5002; }
 
+        /* MINIMIZED CHAT */
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
         #floating-header { display: none; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0,0,0,0.5); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px; cursor: pointer; }
         #notification-badge { position: absolute; top: -5px; right: -5px; background-color: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid #121212; animation: bounce 0.5s; }
@@ -109,6 +98,12 @@
             body.cinema-mode #chat-wrapper { width: 75%; right: 10px; bottom: 80px; height: 45%; } 
             body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; }
         }
+
+        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
+        .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
+        .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
+        .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
+        .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
@@ -222,6 +217,7 @@
         myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
         myVideo.className = 'camera-mode';
 
+        // AUTH
         function switchTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -249,7 +245,20 @@
 
         function startChatApp() {
             document.getElementById('main-container').style.display = 'flex';
-            myPeer = new Peer(undefined); // Global Cloud
+            
+            // --- STUN SUNUCULARI EKLENDİ ---
+            myPeer = new Peer(undefined, { 
+                path: '/peerjs', 
+                host: location.hostname, 
+                port: location.port || (location.protocol === 'https:' ? 443 : 80),
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                }
+            });
+
             myPeer.on('open', id => { myPeerId = id; socket.emit('join-room', ROOM_ID, myPeerId, myNickname); });
             prepareMedia();
             document.getElementById('msg-input').addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
@@ -287,14 +296,11 @@
             if (video) video.className = (type === 'screen') ? 'screen-mode' : 'camera-mode';
         });
 
-        // MEDIA
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
                 cameraStream = stream;
-                // Başlangıçta tümü kapalı
                 cameraStream.getVideoTracks()[0].enabled = false;
                 cameraStream.getAudioTracks()[0].enabled = false;
-                
                 currentActiveStream = cameraStream;
                 myVideo.ondblclick = () => openFullscreen(currentActiveStream);
 
@@ -325,46 +331,33 @@
             call.on('close', () => { video.remove(); delete videoElements[uid]; checkVideoVisibility(); });
         }
 
-        // --- SES KAPATMA/AÇMA (YENİ) ---
         function toggleMic() {
             if(!cameraStream) return alert("Mikrofon bulunamadı!");
             const audioTrack = cameraStream.getAudioTracks()[0];
             const btn = document.getElementById('mic-toggle-btn');
-
-            audioTrack.enabled = !audioTrack.enabled; // Durumu tersine çevir
-
+            audioTrack.enabled = !audioTrack.enabled;
             if(audioTrack.enabled) {
-                btn.classList.add('active');
-                btn.innerHTML = '<i class="fas fa-microphone"></i>';
+                btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-microphone"></i>';
             } else {
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
             }
         }
 
         function toggleCamera() {
             if(!cameraStream) return alert("Kamera yok!");
             if(screenStream) stopScreenShare();
-            const v = cameraStream.getVideoTracks()[0];
-            const btn = document.getElementById('cam-toggle-btn');
-
-            v.enabled = !v.enabled;
-            
-            // Kamera açılınca, ses durumu neyse o kalsın (etkilemeyelim)
-            // Ama ekran paylaşımı bitip kameraya dönüldüğünde ses durumunu koruyoruz.
-            
+            const v = cameraStream.getVideoTracks()[0]; 
+            // Mikrofonu ellemiyoruz, butona bağlı kalsın
+            v.enabled = !v.enabled; 
             currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
-            
+            const btn = document.getElementById('cam-toggle-btn');
             if(v.enabled) { 
-                btn.classList.add('active'); 
-                btn.innerHTML = '<i class="fas fa-video-slash"></i>'; // Kapat ikonu
+                btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-video-slash"></i>';
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId); 
                 notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
             } else { 
-                btn.classList.remove('active'); 
-                btn.innerHTML = '<i class="fas fa-video"></i>';
-                myVideo.remove(); checkVideoVisibility(); 
-                notifyMediaStatus(false,false); 
+                btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-video"></i>';
+                myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false); 
             }
             replaceTracksForEveryone(cameraStream);
         }
@@ -374,10 +367,8 @@
             if(screenStream) { stopScreenShare(); return; }
             try {
                 screenStream = await navigator.mediaDevices.getDisplayMedia({video:true, audio:false});
-                // Sesi ekle (Mikrofon butonu açıksa ses gider)
                 const mic = cameraStream.getAudioTracks()[0];
                 if(mic && mic.enabled) { screenStream.addTrack(mic); }
-                
                 document.getElementById('screen-share-btn').classList.add('screen-active');
                 currentActiveStream = screenStream; myVideo.srcObject = screenStream; myVideo.className = 'screen-mode';
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
@@ -393,11 +384,12 @@
             screenStream.getVideoTracks()[0].stop(); screenStream = null;
             document.getElementById('screen-share-btn').classList.remove('screen-active');
             currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
-            const cam = cameraStream.getVideoTracks()[0];
-            if(document.getElementById('cam-toggle-btn').classList.contains('active')) {
-                cam.enabled = true; notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
+            const v = cameraStream.getVideoTracks()[0];
+            const btn = document.getElementById('cam-toggle-btn');
+            if(btn.classList.contains('active')) {
+                v.enabled = true; notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
             } else {
-                cam.enabled = false; myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false);
+                v.enabled = false; myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false);
             }
             replaceTracksForEveryone(cameraStream);
         }
@@ -408,9 +400,7 @@
                 const s = activeCalls[p].peerConnection.getSenders();
                 const vs = s.find(k=>k.track&&k.track.kind==='video');
                 const as = s.find(k=>k.track&&k.track.kind==='audio');
-                if(vs&&v) vs.replaceTrack(v); 
-                // Ses track'ini sadece var ise değiştir, yoksa elleme (mikrofon butonuna bağlı)
-                if(as&&a) as.replaceTrack(a); 
+                if(vs&&v) vs.replaceTrack(v); if(as&&a) as.replaceTrack(a); 
             }
         }
         function addVideoStream(video, pid) {
