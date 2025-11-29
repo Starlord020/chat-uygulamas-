@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Özel Sohbet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>Mevlüt & Ayşegül</title>
+    <link rel="manifest" href="/manifest.json">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -15,10 +15,24 @@
             --other-msg: #202c33;
             --accent: #00a884;
             --rec-color: #e74c3c;
+            /* Mobilde klavye açılınca değişecek yükseklik değişkeni */
+            --app-height: 100dvh; 
         }
 
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: #e9edef; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg-color); 
+            color: #e9edef; 
+            /* Yükseklik ayarı klavyeye göre dinamik değişecek */
+            height: 100vh; 
+            height: var(--app-height); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
 
         /* GİRİŞ EKRANI */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -30,9 +44,9 @@
         #loading { display: none; color: var(--accent); margin-top: 10px; }
 
         /* ANA EKRAN */
-        #main-container { display: none; flex: 1; height: 100%; flex-direction: column; }
+        #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
 
-        #video-container { background: var(--header-bg); padding: 5px; border-bottom: 1px solid #333; }
+        #video-container { background: var(--header-bg); padding: 5px; border-bottom: 1px solid #333; flex-shrink: 0; }
         #cam-toggle-btn { width: 100%; padding: 10px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
         #cam-toggle-btn.active { background: var(--accent); color: #111b21; }
         
@@ -40,7 +54,8 @@
         #video-grid.open { height: 110px; margin-top: 5px; }
         video { height: 100%; border-radius: 8px; border: 2px solid #444; min-width: 120px; object-fit: cover; background: #000; }
 
-        #chat-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; }
+        /* SOHBET ALANI */
+        #chat-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; overscroll-behavior: contain; }
 
         .message { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; }
         .message.mine { align-self: flex-end; background-color: var(--my-msg); border-top-right-radius: 0; }
@@ -51,10 +66,11 @@
         audio { width: 200px; height: 35px; margin-top: 5px; }
         .system-msg { align-self: center; background: rgba(31,44,52,0.8); padding: 5px 12px; border-radius: 10px; font-size: 12px; color: #aaa; margin: 5px 0; }
 
-        #input-area { background: var(--header-bg); padding: 8px; display: flex; align-items: center; gap: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-        #input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; }
+        /* GİRİŞ ÇUBUĞU (Sabit Kalması İçin Flex Ayarı) */
+        #input-area { background: var(--header-bg); padding: 8px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; width: 100%; }
+        #input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
         
-        .icon-btn { background: none; border: none; color: #8696a0; font-size: 20px; padding: 10px; cursor: pointer; border-radius: 50%; }
+        .icon-btn { background: none; border: none; color: #8696a0; font-size: 20px; padding: 10px; cursor: pointer; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         #mic-btn.recording { color: var(--rec-color); transform: scale(1.2); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
@@ -62,7 +78,8 @@
 <body>
 
     <div id="login-screen">
-        <i class="fas fa-heart" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+        <img src="image_0.png" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid var(--accent);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
+        
         <h2 style="margin-bottom: 30px;">Giriş Yap</h2>
         
         <input type="text" id="username" class="login-input" placeholder="İsminiz" maxlength="15" autocomplete="off">
@@ -96,6 +113,17 @@
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     
     <script>
+        // --- KLAVYE DÜZELTME KODU (Mobil İçin Kritik) ---
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
+                scrollToBottom();
+            });
+            // İlk açılışta da ayarla
+            document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
+        }
+        // ------------------------------------------------
+
         const socket = io();
         let myPeer, myPeerId;
         let myStream = null;
@@ -107,19 +135,14 @@
         const myVideo = document.createElement('video');
         myVideo.muted = true;
 
-        // PeerJS Başlat
         myPeer = new Peer(undefined, {
             path: '/peerjs',
             host: location.hostname,
             port: location.port || (location.protocol === 'https:' ? 443 : 80)
         });
 
-        myPeer.on('open', id => {
-            myPeerId = id;
-            console.log("Peer ID alındı:", id);
-        });
+        myPeer.on('open', id => { myPeerId = id; });
 
-        // --- GİRİŞ FONKSİYONU ---
         function attemptLogin() {
             const nameInput = document.getElementById('username');
             const passInput = document.getElementById('password');
@@ -142,14 +165,8 @@
             loading.style.display = 'block';
             myNickname = nameInput.value;
 
-            if(myPeerId) {
-                completeLogin();
-            } else {
-                myPeer.on('open', id => {
-                    myPeerId = id;
-                    completeLogin();
-                });
-            }
+            if(myPeerId) completeLogin();
+            else myPeer.on('open', id => { myPeerId = id; completeLogin(); });
         }
 
         function completeLogin() {
@@ -161,32 +178,32 @@
             document.getElementById('msg-input').addEventListener('keydown', (e) => {
                 if(e.key === 'Enter') sendMessage();
             });
+            
+            // Inputa odaklanınca scroll kaymasını engelle
+            document.getElementById('msg-input').addEventListener('focus', () => {
+                setTimeout(scrollToBottom, 300);
+            });
 
             prepareMedia();
         }
 
-        // --- MEDYA SİSTEMİ ---
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 myStream = stream;
                 myStream.getVideoTracks()[0].enabled = false;
                 myStream.getAudioTracks()[0].enabled = false;
-
                 addVideoStream(myVideo, stream);
-
+                
                 myPeer.on('call', call => {
                     call.answer(stream);
                     const video = document.createElement('video');
-                    call.on('stream', userStream => addVideoStream(video, userStream));
+                    call.on('stream', s => addVideoStream(video, s));
                 });
 
-                socket.on('user-connected', (userId, name) => {
-                    connectToNewUser(userId, stream);
-                });
+                socket.on('user-connected', (userId, name) => connectToNewUser(userId, stream));
             })
             .catch(err => {
-                console.log("Kamera/Mikrofon izni yok.");
                 document.getElementById('cam-toggle-btn').innerText = "Kamera İzni Yok";
                 document.getElementById('cam-toggle-btn').disabled = true;
             });
@@ -194,16 +211,15 @@
 
         function toggleCamera() {
             if(!myStream) return alert("Kamera bulunamadı!");
-            
-            const videoTrack = myStream.getVideoTracks()[0];
-            const audioTrack = myStream.getAudioTracks()[0];
+            const vTrack = myStream.getVideoTracks()[0];
+            const aTrack = myStream.getAudioTracks()[0];
             const btn = document.getElementById('cam-toggle-btn');
             const grid = document.getElementById('video-grid');
 
-            videoTrack.enabled = !videoTrack.enabled;
-            audioTrack.enabled = videoTrack.enabled;
+            vTrack.enabled = !vTrack.enabled;
+            aTrack.enabled = vTrack.enabled;
 
-            if(videoTrack.enabled) {
+            if(vTrack.enabled) {
                 btn.innerHTML = '<i class="fas fa-video"></i> Kamerayı Kapat';
                 btn.classList.add('active');
                 grid.classList.add('open');
@@ -216,7 +232,7 @@
         function connectToNewUser(userId, stream) {
             const call = myPeer.call(userId, stream);
             const video = document.createElement('video');
-            call.on('stream', stream => addVideoStream(video, stream));
+            call.on('stream', s => addVideoStream(video, s));
             call.on('close', () => video.remove());
         }
 
@@ -226,7 +242,6 @@
             videoGrid.append(video);
         }
 
-        // --- MESAJ & SES & RESİM ---
         socket.on('createMessage', data => renderMessage(data));
         socket.on('load-history', history => history.forEach(renderMessage));
         
@@ -235,21 +250,16 @@
             if(input.value.trim()) {
                 socket.emit('message', input.value);
                 input.value = '';
+                // Mesaj atınca odak kaybetme (klavye açık kalsın)
+                input.focus(); 
             }
         }
 
-        // GÜNCELLENEN RESİM GÖNDERME FONKSİYONU
         function sendImage() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
-
             if (!file) return;
-
-            // Boyut Kontrolü (100 MB altı olmalı)
-            if (file.size > 100 * 1024 * 1024) { 
-                alert("Dosya çok büyük!");
-                return;
-            }
+            if (file.size > 100 * 1024 * 1024) return alert("Dosya çok büyük!");
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -259,7 +269,6 @@
             reader.readAsDataURL(file);
         }
 
-        // Ses Kayıt
         let mediaRecorder;
         let audioChunks = [];
         const micBtn = document.getElementById('mic-btn');
@@ -267,13 +276,11 @@
         const startRec = (e) => {
             if(e.cancelable) e.preventDefault();
             if(!navigator.mediaDevices) return alert("Mikrofon izni yok!");
-            
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.start();
                 audioChunks = [];
                 micBtn.classList.add('recording');
-                
                 mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(audioChunks, { type: 'audio/webm' });
@@ -309,7 +316,12 @@
 
             div.innerHTML = `<span class="sender-name" style="${isMine?'display:none':''}">${data.user}</span>${content}<div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
             chatArea.appendChild(div);
-            chatArea.scrollTop = chatArea.scrollHeight;
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const d = document.getElementById('chat-area');
+            d.scrollTop = d.scrollHeight;
         }
     </script>
 </body>
