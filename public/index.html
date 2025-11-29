@@ -11,8 +11,6 @@
             --bg-color: #0b141a;
             --header-bg: #1f2c34;
             --chat-bg: #0b141a;
-            --my-msg: #005c4b;
-            --other-msg: #202c33;
             --accent: #00a884;
             --text-primary: #e9edef;
             --text-secondary: #8696a0;
@@ -26,10 +24,8 @@
             height: var(--app-height); display: flex; flex-direction: column; overflow: hidden; 
         }
 
-        /* --- ORTAK GİZLİLİK --- */
+        /* --- UI ELEMENTS --- */
         .hidden { display: none !important; }
-
-        /* --- GİRİŞ & KAYIT --- */
         #auth-screen, #room-pass-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .auth-container { width: 90%; max-width: 350px; text-align: center; }
         .auth-tabs { display: flex; justify-content: center; margin-bottom: 20px; border-bottom: 1px solid #333; }
@@ -42,49 +38,50 @@
         .status-msg { margin-top: 10px; font-size: 14px; min-height: 20px; }
         .error { color: #ef5350; } .success { color: #2ecc71; }
 
-        /* --- HEADER --- */
-        #app-header {
-            background-color: var(--header-bg); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3); z-index: 100;
-        }
+        /* --- HEADER & LIST --- */
+        #app-header { background-color: var(--header-bg); padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.3); z-index: 100; }
         .header-info { display: flex; align-items: center; gap: 10px; }
         .header-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .header-text h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--text-primary); }
         .header-text span { font-size: 12px; color: var(--accent); }
         .header-actions { display: flex; gap: 10px; }
-        
-        .circle-btn {
-            width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: var(--text-secondary);
-            font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        }
+        .circle-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .circle-btn:hover { background: rgba(255,255,255,0.1); }
         .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(0, 168, 132, 0.4); }
-        .circle-btn.screen-active { background: #3498db; color: white; box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); }
+        .circle-btn.screen-active { background: #3498db; color: white; }
 
-        /* --- VİDEO ALANI (MOBİL İÇİN DÜZELTİLDİ) --- */
-        #video-container {
-            background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative;
+        /* --- USER LIST POPUP (YENİLENDİ) --- */
+        #user-list-popup { 
+            position: absolute; top: 60px; right: 10px; width: 240px; 
+            background: #2a3942; border-radius: 10px; padding: 0;
+            display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); overflow: hidden;
         }
-        /* Video varsa veya kamera açıksa görünür yap */
+        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
+        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
+        
+        /* Liste Elemanı Tasarımı */
+        .user-item { padding: 12px 15px; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: var(--text-primary); }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; } /* Varsayılan Gri */
+        .user-item.online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; } /* Online ise Yeşil */
+        .user-item.offline { color: #777; } /* Offline yazı rengi */
+        
+        .media-icons { display: flex; gap: 8px; }
+        .media-icon { font-size: 12px; padding: 4px; border-radius: 4px; cursor: pointer; }
+        .media-icon.cam { background: var(--accent); color: white; }
+        .media-icon.screen { background: #3498db; color: white; }
+
+        /* --- VIDEO AREA --- */
+        #video-container { background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; }
         #video-container.visible { height: 140px; border-bottom: 1px solid #333; }
-        
         #video-grid { display: flex; overflow-x: auto; gap: 8px; height: 100%; padding: 10px; align-items: center; scrollbar-width: none; }
-        
-        video { 
-            height: 100%; border-radius: 8px; border: 1px solid #333; min-width: 140px; object-fit: cover; background: #111; cursor: pointer; 
-        }
+        video { height: 100%; border-radius: 8px; border: 1px solid #333; min-width: 140px; object-fit: cover; background: #111; cursor: pointer; }
 
-        /* --- MAIN --- */
+        /* --- CHAT --- */
         #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
         #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        #chat-area { 
-            flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 5px; 
-            background-color: var(--chat-bg); 
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
-            background-blend-mode: overlay; opacity: 0.95;
-        }
+        #chat-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 5px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; opacity: 0.95; }
 
-        /* --- INPUT --- */
         #input-area { background: var(--header-bg); padding: 8px 10px; display: flex; align-items: center; gap: 8px; width: 100%; }
         #input-area input { flex: 1; padding: 12px 20px; border-radius: 25px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
         .icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 22px; padding: 8px; cursor: pointer; }
@@ -92,25 +89,12 @@
         #mic-btn.recording { background: #e74c3c; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* --- MESAJ --- */
         .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; margin-bottom: 2px; }
-        .message.mine { align-self: flex-end; background-color: var(--my-msg); border-top-right-radius: 0; }
-        .message.theirs { align-self: flex-start; background-color: var(--other-msg); border-top-left-radius: 0; }
+        .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
+        .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
         .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
         .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
 
-        /* --- POPUPS --- */
-        #user-list-popup { 
-            position: absolute; top: 60px; right: 10px; width: 220px; 
-            background: #2a3942; border-radius: 10px; padding: 0;
-            display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
-        }
-        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
-        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
-        #user-list-content li::before { content: ''; width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; }
-
-        /* --- FULLSCREEN --- */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 5002; }
@@ -172,7 +156,7 @@
         </header>
 
         <div id="user-list-popup">
-            <h4>Aktif Kişiler</h4>
+            <h4>Kişi Listesi</h4>
             <ul id="user-list-content"></ul>
         </div>
 
@@ -204,37 +188,27 @@
             document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
         }
 
+        function isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); }
+        if (isMobile()) document.getElementById('screen-share-btn').style.display = 'none';
+
         const socket = io();
         let myPeer, myPeerId;
-        
-        // AKIŞ DEĞİŞKENLERİ
         let cameraStream = null;
         let screenStream = null;
         let currentActiveStream = null;
-        
         let myNickname = "";
         const ROOM_ID = "ozel-oda-v1";
         const ROOM_PASS = "mevlüthanayşegül"; 
 
         const videoGrid = document.getElementById('video-grid');
         const activeCalls = {};
+        // PeerID -> Video Element Eşleşmesi (Tıklayıp açmak için)
+        const videoElements = {}; 
         
-        // --- 1. MOBİL KONTROLÜ (Ekran Paylaşımını Gizle) ---
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-
-        if (isMobile()) {
-            document.getElementById('screen-share-btn').style.display = 'none';
-        }
-
-        // --- 2. VİDEO OLUŞTURMA (PLAYSINLINE EKLENDİ) ---
         const myVideo = document.createElement('video');
-        myVideo.muted = true;
-        myVideo.setAttribute('playsinline', ''); // İPHONE İÇİN KRİTİK
-        myVideo.autoplay = true;
+        myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
 
-        // --- GİRİŞ & AUTH ---
+        // AUTH
         function switchTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -271,58 +245,96 @@
             document.getElementById('msg-input').addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
         }
 
-        function checkVideoVisibility() {
-            const container = document.getElementById('video-container');
-            if (videoGrid.childElementCount > 0) container.classList.add('visible');
-            else container.classList.remove('visible');
-        }
+        // --- LİSTE GÜNCELLEME (Gelişmiş) ---
         function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
+        
         socket.on('update-user-list', (users) => {
-            const list = document.getElementById('user-list-content'); list.innerHTML = "";
-            users.forEach(u => { const li = document.createElement('li'); li.innerText = u; list.appendChild(li); });
+            const list = document.getElementById('user-list-content');
+            list.innerHTML = "";
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.className = `user-item ${user.online ? 'online' : 'offline'}`;
+                
+                let iconsHtml = '';
+                // Online ve Medya Açıksa İkonları Göster
+                if (user.online) {
+                    if (user.cam) iconsHtml += `<i class="fas fa-video media-icon cam" title="Kamera Açık"></i>`;
+                    if (user.screen) iconsHtml += `<i class="fas fa-desktop media-icon screen" title="Ekran Açık"></i>`;
+                }
+
+                li.innerHTML = `
+                    <div class="user-info">
+                        <div class="status-dot"></div>
+                        <span>${user.nickname}</span>
+                    </div>
+                    <div class="media-icons" onclick="focusUserVideo('${user.peerId}')">
+                        ${iconsHtml}
+                    </div>
+                `;
+                list.appendChild(li);
+            });
         });
 
-        // --- MEDYA YÖNETİMİ ---
+        // Listeden ikona tıklayınca videoyu bul ve büyüt
+        window.focusUserVideo = function(targetPeerId) {
+            // Eğer kendi ikonuna tıkladıysa
+            if (targetPeerId === myPeerId) {
+                if (currentActiveStream && (cameraStream.getVideoTracks()[0].enabled || screenStream)) {
+                    openFullscreen(currentActiveStream);
+                }
+                return;
+            }
+            // Başkasına tıkladıysa
+            const videoEl = videoElements[targetPeerId];
+            if (videoEl) {
+                openFullscreen(videoEl.srcObject);
+            }
+        };
+
+        // --- MEDYA ---
+        function notifyMediaStatus(cam, screen) {
+            socket.emit('media-status', { cam: cam, screen: screen });
+        }
+
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
                 cameraStream = stream;
                 cameraStream.getVideoTracks()[0].enabled = false;
                 cameraStream.getAudioTracks()[0].enabled = false;
-                
                 currentActiveStream = cameraStream;
                 myVideo.ondblclick = () => openFullscreen(currentActiveStream);
 
                 myPeer.on('call', call => {
                     call.answer(currentActiveStream);
-                    const video = document.createElement('video');
-                    video.setAttribute('playsinline', ''); // ÖNEMLİ
+                    const video = document.createElement('video'); video.setAttribute('playsinline', '');
                     activeCalls[call.peer] = call;
                     
                     call.on('stream', userStream => {
                         video.srcObject = userStream;
                         video.ondblclick = () => openFullscreen(userStream);
-                        addVideoStream(video);
+                        addVideoStream(video, call.peer); // PeerID ile kaydet
                     });
                 });
-
                 socket.on('user-connected', (userId, name) => connectToNewUser(userId));
             }).catch(err => { console.error(err); document.getElementById('cam-toggle-btn').disabled = true; });
         }
 
         function connectToNewUser(userId) {
             const call = myPeer.call(userId, currentActiveStream);
-            const video = document.createElement('video');
-            video.setAttribute('playsinline', ''); // ÖNEMLİ
+            const video = document.createElement('video'); video.setAttribute('playsinline', '');
             activeCalls[userId] = call;
             call.on('stream', userStream => {
                 video.srcObject = userStream;
                 video.ondblclick = () => openFullscreen(userStream);
-                addVideoStream(video);
+                addVideoStream(video, userId); // PeerID ile kaydet
             });
-            call.on('close', () => { video.remove(); checkVideoVisibility(); });
+            call.on('close', () => { 
+                video.remove(); 
+                delete videoElements[userId];
+                checkVideoVisibility(); 
+            });
         }
 
-        // --- KAMERA ---
         function toggleCamera() {
             if(!cameraStream) return alert("Kamera bulunamadı!");
             if(screenStream) stopScreenShare();
@@ -333,28 +345,27 @@
 
             vTrack.enabled = !vTrack.enabled;
             aTrack.enabled = vTrack.enabled;
-
             currentActiveStream = cameraStream;
             myVideo.srcObject = cameraStream;
 
             if(vTrack.enabled) {
                 btn.classList.add('active');
                 btn.innerHTML = '<i class="fas fa-video-slash"></i>';
-                if (!videoGrid.contains(myVideo)) addVideoStream(myVideo);
+                if (!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
+                notifyMediaStatus(true, false);
             } else {
                 btn.classList.remove('active');
                 btn.innerHTML = '<i class="fas fa-video"></i>';
                 myVideo.remove();
                 checkVideoVisibility();
+                notifyMediaStatus(false, false);
             }
             replaceTracksForEveryone(cameraStream);
         }
 
-        // --- EKRAN PAYLAŞIMI ---
         async function toggleScreenShare() {
-            if (isMobile()) return alert("Telefondan ekran paylaşılamaz!");
+            if (isMobile()) return;
             const btn = document.getElementById('screen-share-btn');
-            
             if (screenStream) { stopScreenShare(); return; }
 
             try {
@@ -367,9 +378,10 @@
                 myVideo.srcObject = screenStream;
                 myVideo.ondblclick = () => openFullscreen(screenStream);
                 
-                if (!videoGrid.contains(myVideo)) addVideoStream(myVideo);
+                if (!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
                 checkVideoVisibility();
-
+                
+                notifyMediaStatus(false, true); // Ekran açık bildir
                 replaceTracksForEveryone(screenStream);
                 screenStream.getVideoTracks()[0].onended = () => stopScreenShare();
 
@@ -391,11 +403,13 @@
             
             if (camBtn.classList.contains('active')) {
                 vTrack.enabled = true;
+                notifyMediaStatus(true, false); // Kamera açık bildir
                 replaceTracksForEveryone(cameraStream);
             } else {
                 vTrack.enabled = false;
                 myVideo.remove();
                 checkVideoVisibility();
+                notifyMediaStatus(false, false); // Her şey kapalı
                 replaceTracksForEveryone(cameraStream);
             }
         }
@@ -403,10 +417,8 @@
         function replaceTracksForEveryone(newStream) {
             const videoTrack = newStream.getVideoTracks()[0];
             const audioTrack = newStream.getAudioTracks()[0];
-
             for (let peerId in activeCalls) {
-                const peerConnection = activeCalls[peerId].peerConnection;
-                const senders = peerConnection.getSenders();
+                const senders = activeCalls[peerId].peerConnection.getSenders();
                 const videoSender = senders.find(s => s.track && s.track.kind === 'video');
                 const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
                 if (videoSender && videoTrack) videoSender.replaceTrack(videoTrack);
@@ -414,10 +426,17 @@
             }
         }
 
-        function addVideoStream(video) {
+        function addVideoStream(video, peerId) {
             video.addEventListener('loadedmetadata', () => video.play());
             if (!videoGrid.contains(video)) videoGrid.append(video);
+            if (peerId) videoElements[peerId] = video; // Elementi kaydet
             checkVideoVisibility();
+        }
+
+        function checkVideoVisibility() {
+            const container = document.getElementById('video-container');
+            if (videoGrid.childElementCount > 0) container.classList.add('visible');
+            else container.classList.remove('visible');
         }
 
         function openFullscreen(stream) {
