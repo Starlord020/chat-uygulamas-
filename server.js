@@ -21,10 +21,11 @@ function saveUsers() { fs.writeFileSync(USERS_FILE, JSON.stringify(usersDB, null
 
 let messageHistory = []; 
 const MAX_HISTORY = 50;
-let onlineSessions = {}; 
+let onlineSessions = {}; // socket.id -> { nickname, peerId, cam, screen }
 
 io.on('connection', (socket) => {
     
+    // KAYIT & GİRİŞ
     socket.on('register', (u, p) => {
         if (usersDB[u]) socket.emit('auth-error', 'İsim alınmış.');
         else { usersDB[u] = p; saveUsers(); socket.emit('register-success', 'Kayıt başarılı.'); broadcastUserList(); }
@@ -35,15 +36,36 @@ io.on('connection', (socket) => {
         else socket.emit('auth-error', 'Hatalı bilgiler.');
     });
 
+    // ODAYA GİRİŞ
     socket.on('join-room', (roomId, peerId, nickname) => {
         socket.join(roomId);
-        onlineSessions[socket.id] = { nickname, peerId };
+        // Varsayılan olarak kapalı başlıyoruz
+        onlineSessions[socket.id] = { nickname, peerId, cam: false, screen: false };
         
+        // 1. Listeyi herkese duyur
         broadcastUserList(roomId);
+        
+        // 2. Geçmiş mesajları yükle
         socket.emit('load-history', messageHistory);
+        
+        // 3. Diğerlerine "Yeni biri geldi" de
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // Mesaj İşleme
+        // MEDYA DURUMU GÜNCELLEME
+        socket.on('media-status', (status) => {
+            if (onlineSessions[socket.id]) {
+                onlineSessions[socket.id].cam = status.cam;
+                onlineSessions[socket.id].screen = status.screen;
+                broadcastUserList(roomId);
+            }
+        });
+
+        // GÖRÜNTÜ TÜRÜ DEĞİŞİMİ
+        socket.on('stream-changed', (type) => {
+            socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
+        });
+
+        // MESAJ
         const handleMessage = (type, content) => {
             const msgData = { type, user: nickname, content, senderId: socket.id, time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) };
             messageHistory.push(msgData);
@@ -54,9 +76,10 @@ io.on('connection', (socket) => {
         socket.on('image', i => handleMessage('image', i));
         socket.on('voice', v => handleMessage('audio', v));
 
+        // ÇIKIŞ
         socket.on('disconnect', () => {
-            delete onlineSessions[socket.id];
-            broadcastUserList(roomId);
+            delete onlineSessions[socket.id]; // Listeden sil
+            broadcastUserList(roomId); // Güncel listeyi yayınla
             socket.to(roomId).emit('user-disconnected', peerId, nickname);
         });
     });
@@ -64,7 +87,17 @@ io.on('connection', (socket) => {
     function broadcastUserList(roomId = "ozel-oda-v1") {
         const allUsers = Object.keys(usersDB).map(username => {
             const session = Object.values(onlineSessions).find(s => s.nickname === username);
-            return session ? { nickname: username, online: true, peerId: session.peerId } : { nickname: username, online: false };
+            if (session) {
+                return { 
+                    nickname: username, 
+                    online: true, 
+                    peerId: session.peerId, 
+                    cam: session.cam, 
+                    screen: session.screen 
+                };
+            } else {
+                return { nickname: username, online: false };
+            }
         });
         io.to(roomId).emit('update-user-list', allUsers);
     }
