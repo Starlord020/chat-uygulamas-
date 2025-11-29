@@ -2,17 +2,15 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const fs = require('fs');
+// PeerJS sunucusunu buradan sildik, artık client tarafında globale bağlanacağız.
 const io = require('socket.io')(http, {
     cors: { origin: "*", methods: ["GET", "POST"] },
     maxHttpBufferSize: 1e8 
 });
-const { ExpressPeerServer } = require('peer');
 
 app.use(express.static('public'));
 
-const peerServer = ExpressPeerServer(http, { debug: true });
-app.use('/peerjs', peerServer);
-
+// Veritabanı
 const USERS_FILE = './users.json';
 let usersDB = {};
 if (fs.existsSync(USERS_FILE)) { try { usersDB = JSON.parse(fs.readFileSync(USERS_FILE)); } catch(e){} } 
@@ -37,18 +35,16 @@ io.on('connection', (socket) => {
 
     socket.on('join-room', (roomId, peerId, nickname) => {
         socket.join(roomId);
+        // PeerID artık global sunucudan gelecek
         onlineSessions[socket.id] = { nickname, peerId, cam: false, screen: false };
         
         broadcastUserList(roomId);
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // --- YENİ EKLENEN KISIM: Görüntü Modu Değişimi ---
         socket.on('stream-changed', (type) => {
-            // type: 'camera' veya 'screen'
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
-        // -------------------------------------------------
 
         socket.on('media-status', (status) => {
             if (onlineSessions[socket.id]) {
