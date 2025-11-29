@@ -51,29 +51,15 @@
         .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 10px rgba(0, 168, 132, 0.4); }
         .circle-btn.screen-active { background: #3498db; color: white; box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); }
 
-        /* USER LIST */
-        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
-        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
-        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
-        .offline { color: #777; }
-        .media-icons { margin-left: auto; display: flex; gap: 5px; }
-        .media-icon { font-size: 12px; }
-
         /* VIDEO AREA */
         #video-container { background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; }
         #video-container.visible { height: 140px; border-bottom: 1px solid #333; }
         #video-grid { display: flex; overflow-x: auto; gap: 8px; height: 100%; padding: 10px; align-items: center; scrollbar-width: none; }
-        
-        /* Video Stilleri */
         video { height: 100%; border-radius: 8px; border: 1px solid #333; min-width: 140px; background: #111; cursor: pointer; transition: object-fit 0.3s; }
-        /* Varsayılan kamera: cover (doldur), Ekran: contain (sığdır) */
         video.camera-mode { object-fit: cover; }
         video.screen-mode { object-fit: contain; border-color: #3498db; }
 
-        /* MAIN & CHAT */
+        /* CHAT & MAIN */
         #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
         #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #chat-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 5px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; opacity: 0.95; }
@@ -84,28 +70,35 @@
         #mic-btn { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         #mic-btn.recording { background: #e74c3c; animation: pulse 1s infinite; }
 
-        /* MESSAGES */
-        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; margin-bottom: 2px; }
+        .message { max-width: 80%; padding: 6px 10px; border-radius: 10px; font-size: 15px; margin-bottom: 2px; position: relative; word-wrap: break-word; }
         .message.mine { align-self: flex-end; background-color: #005c4b; border-top-right-radius: 0; }
         .message.theirs { align-self: flex-start; background-color: #202c33; border-top-left-radius: 0; }
         .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
         .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
 
-        /* FULLSCREEN & CINEMA MODE */
+        /* USER LIST POPUP */
+        #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
+        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+        .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .offline { color: #777; }
+        .media-icons { margin-left: auto; display: flex; gap: 5px; }
+        .media-icon { font-size: 12px; }
+
+        /* FULLSCREEN */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 5002; }
 
-        /* Minimized Chat Elements */
+        /* CINEMA MODE & MINIMIZED CHAT */
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
         #floating-header { display: none; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0,0,0,0.5); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px; cursor: pointer; }
         #notification-badge { position: absolute; top: -5px; right: -5px; background-color: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid #121212; animation: bounce 0.5s; }
 
-        /* Cinema Mode Styles */
         body.cinema-mode #chat-wrapper { position: fixed; right: 20px; bottom: 20px; width: 320px; height: 450px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border-radius: 15px; z-index: 5001; border: 1px solid rgba(255,255,255,0.1); }
         body.cinema-mode #floating-header { display: flex; }
-        
-        /* Minimized State */
         body.cinema-mode #chat-wrapper.minimized { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); right: 20px; bottom: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: visible; }
         body.cinema-mode #chat-wrapper.minimized #chat-area, 
         body.cinema-mode #chat-wrapper.minimized #input-area, 
@@ -113,7 +106,7 @@
         body.cinema-mode #chat-wrapper.minimized #minimize-icon { display: flex; }
 
         @media (max-width: 600px) { 
-            body.cinema-mode #chat-wrapper { width: 85%; right: 50%; transform: translateX(50%); bottom: 20px; height: 50%; } 
+            body.cinema-mode #chat-wrapper { width: 75%; right: 10px; bottom: 80px; height: 45%; } 
             body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; }
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
@@ -192,7 +185,7 @@
             <div id="input-area">
                 <input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
                 <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-plus"></i></button>
-                <input type="text" id="msg-input" placeholder="Mesaj..." autocomplete="off">
+                <input type="text" id="msg-input" placeholder="Mesaj yaz..." autocomplete="off">
                 <button class="icon-btn" onclick="sendMessage()"><i class="fas fa-paper-plane" style="color: var(--accent)"></i></button>
                 <button id="mic-btn" onclick=""><i class="fas fa-microphone"></i></button>
             </div>
@@ -226,9 +219,9 @@
         
         const myVideo = document.createElement('video');
         myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
-        myVideo.className = 'camera-mode'; // Varsayılan
+        myVideo.className = 'camera-mode';
 
-        // AUTH
+        // --- AUTH ---
         function switchTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -256,7 +249,20 @@
 
         function startChatApp() {
             document.getElementById('main-container').style.display = 'flex';
-            myPeer = new Peer(undefined, { path: '/peerjs', host: location.hostname, port: location.port || (location.protocol === 'https:' ? 443 : 80) });
+            
+            // --- STUN SERVER AYARLARI (KRİTİK) ---
+            myPeer = new Peer(undefined, { 
+                path: '/peerjs', 
+                host: location.hostname, 
+                port: location.port || (location.protocol === 'https:' ? 443 : 80),
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
+                    ]
+                }
+            });
+
             myPeer.on('open', id => { myPeerId = id; socket.emit('join-room', ROOM_ID, myPeerId, myNickname); });
             prepareMedia();
             document.getElementById('msg-input').addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
@@ -267,9 +273,7 @@
             if (videoGrid.childElementCount > 0) container.classList.add('visible');
             else container.classList.remove('visible');
         }
-        
         function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
-        
         socket.on('update-user-list', (users) => {
             const list = document.getElementById('user-list-content'); list.innerHTML = "";
             users.forEach(u => {
@@ -281,28 +285,18 @@
                     if (u.screen) iconsHtml += `<i class="fas fa-desktop media-icon" style="color:#3498db"></i>`;
                 }
                 li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> <div class="media-icons">${iconsHtml}</div>`;
-                if(u.online && (u.cam || u.screen)) li.style.cursor = 'pointer'; li.onclick = () => window.focusUserVideo(u.peerId);
+                if(u.online && (u.cam || u.screen)) { li.style.cursor = 'pointer'; li.onclick = () => window.focusUserVideo(u.peerId); }
                 list.appendChild(li);
             });
         });
-
         window.focusUserVideo = function(pid) {
             if (pid === myPeerId && currentActiveStream) openFullscreen(currentActiveStream);
             else if (videoElements[pid]) openFullscreen(videoElements[pid].srcObject);
         };
-        
         function notifyMediaStatus(c, s) { socket.emit('media-status', { cam: c, screen: s }); }
-
-        // --- STREAM CHANGE HANDLER ---
         socket.on('user-stream-changed', ({ peerId, type }) => {
             const video = videoElements[peerId];
-            if (video) {
-                if (type === 'screen') {
-                    video.className = 'screen-mode'; // CONTAIN
-                } else {
-                    video.className = 'camera-mode'; // COVER
-                }
-            }
+            if (video) video.className = (type === 'screen') ? 'screen-mode' : 'camera-mode';
         });
 
         // --- MEDIA ---
@@ -318,10 +312,8 @@
                     call.answer(currentActiveStream);
                     const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
                     activeCalls[call.peer] = call;
-                    
-                    call.on('stream', userStream => {
-                        video.srcObject = userStream;
-                        video.ondblclick = () => openFullscreen(userStream);
+                    call.on('stream', s => {
+                        video.srcObject = s; video.ondblclick = () => openFullscreen(s);
                         addVideoStream(video, call.peer);
                     });
                 });
@@ -333,7 +325,10 @@
             const call = myPeer.call(uid, currentActiveStream);
             const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
             activeCalls[uid] = call;
-            call.on('stream', s => { video.srcObject = s; video.ondblclick = () => openFullscreen(s); addVideoStream(video, uid); });
+            call.on('stream', s => {
+                video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                addVideoStream(video, uid);
+            });
             call.on('close', () => { video.remove(); delete videoElements[uid]; checkVideoVisibility(); });
         }
 
@@ -362,9 +357,8 @@
                 screenStream = await navigator.mediaDevices.getDisplayMedia({video:true, audio:false});
                 const mic = cameraStream.getAudioTracks()[0];
                 if(mic) { mic.enabled = true; screenStream.addTrack(mic); }
-                
                 document.getElementById('screen-share-btn').classList.add('screen-active');
-                currentActiveStream = screenStream; myVideo.srcObject = screenStream; myVideo.className = 'screen-mode'; // CONTAIN
+                currentActiveStream = screenStream; myVideo.srcObject = screenStream; myVideo.className = 'screen-mode';
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
                 checkVideoVisibility();
                 notifyMediaStatus(false,true); socket.emit('stream-changed', 'screen');
@@ -378,7 +372,6 @@
             screenStream.getVideoTracks()[0].stop(); screenStream = null;
             document.getElementById('screen-share-btn').classList.remove('screen-active');
             currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
-            
             const cam = cameraStream.getVideoTracks()[0];
             if(document.getElementById('cam-toggle-btn').classList.contains('active')) {
                 cam.enabled = true; notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
