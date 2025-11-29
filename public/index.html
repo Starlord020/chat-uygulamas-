@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Özel Sohbet</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --chat-bg: #0b141a;
+            --header-bg: #1f2c34;
+            --my-msg: #005c4b;
+            --other-msg: #202c33;
+            --accent: #00a884;
+            --rec-color: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: #e9edef; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* GİRİŞ EKRANI */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .login-input { padding: 15px; width: 80%; max-width: 300px; border-radius: 25px; border: none; text-align: center; font-size: 16px; margin-bottom: 15px; background: #2a3942; color: white; outline: none; }
+        
+        #login-screen button { padding: 15px 40px; border-radius: 25px; border: none; background: var(--accent); font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; width: 80%; max-width: 300px; }
+        #error-msg { color: #ef5350; margin-top: 15px; display: none; font-weight: bold; }
+        #loading { display: none; color: var(--accent); margin-top: 10px; }
+
+        /* ANA EKRAN */
+        #main-container { display: none; flex: 1; height: 100%; flex-direction: column; }
+
+        #video-container { background: var(--header-bg); padding: 5px; border-bottom: 1px solid #333; }
+        #cam-toggle-btn { width: 100%; padding: 10px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        #cam-toggle-btn.active { background: var(--accent); color: #111b21; }
+        
+        #video-grid { display: flex; overflow-x: auto; gap: 8px; height: 0; transition: height 0.3s; scrollbar-width: none; margin-top: 0; }
+        #video-grid.open { height: 110px; margin-top: 5px; }
+        video { height: 100%; border-radius: 8px; border: 2px solid #444; min-width: 120px; object-fit: cover; background: #000; }
+
+        #chat-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; }
+
+        .message { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; }
+        .message.mine { align-self: flex-end; background-color: var(--my-msg); border-top-right-radius: 0; }
+        .message.theirs { align-self: flex-start; background-color: var(--other-msg); border-top-left-radius: 0; }
+        
+        .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
+        .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
+        audio { width: 200px; height: 35px; margin-top: 5px; }
+        .system-msg { align-self: center; background: rgba(31,44,52,0.8); padding: 5px 12px; border-radius: 10px; font-size: 12px; color: #aaa; margin: 5px 0; }
+
+        #input-area { background: var(--header-bg); padding: 8px; display: flex; align-items: center; gap: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        #input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; }
+        
+        .icon-btn { background: none; border: none; color: #8696a0; font-size: 20px; padding: 10px; cursor: pointer; border-radius: 50%; }
+        #mic-btn.recording { color: var(--rec-color); transform: scale(1.2); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <i class="fas fa-heart" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 30px;">Giriş Yap</h2>
+        
+        <input type="text" id="username" class="login-input" placeholder="İsminiz" maxlength="15" autocomplete="off">
+        <input type="password" id="password" class="login-input" placeholder="Şifre">
+        
+        <button onclick="attemptLogin()">SOHBETE GİR</button>
+        <div id="error-msg">Hatalı şifre!</div>
+        <div id="loading">Bağlanıyor...</div>
+    </div>
+
+    <div id="main-container">
+        <div id="video-container">
+            <button id="cam-toggle-btn" onclick="toggleCamera()">
+                <i class="fas fa-video-slash"></i> Kamerayı Aç
+            </button>
+            <div id="video-grid"></div>
+        </div>
+
+        <div id="chat-area"></div>
+
+        <div id="input-area">
+            <input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
+            <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-camera"></i></button>
+            <input type="text" id="msg-input" placeholder="Mesaj..." autocomplete="off">
+            <button class="icon-btn" onclick="sendMessage()" style="color: var(--accent);"><i class="fas fa-paper-plane"></i></button>
+            <button class="icon-btn" id="mic-btn"><i class="fas fa-microphone"></i></button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    
+    <script>
+        const socket = io();
+        let myPeer, myPeerId;
+        let myStream = null;
+        let myNickname = "";
+        const roomId = "ozel-oda-v1";
+        const PASSWORD = "mevlüthanayşegül"; 
+
+        const videoGrid = document.getElementById('video-grid');
+        const myVideo = document.createElement('video');
+        myVideo.muted = true;
+
+        // PeerJS Başlat
+        myPeer = new Peer(undefined, {
+            path: '/peerjs',
+            host: location.hostname,
+            port: location.port || (location.protocol === 'https:' ? 443 : 80)
+        });
+
+        myPeer.on('open', id => {
+            myPeerId = id;
+            console.log("Peer ID alındı:", id);
+        });
+
+        // --- GİRİŞ FONKSİYONU ---
+        function attemptLogin() {
+            const nameInput = document.getElementById('username');
+            const passInput = document.getElementById('password');
+            const errorMsg = document.getElementById('error-msg');
+            const loading = document.getElementById('loading');
+
+            if (!nameInput.value.trim()) {
+                errorMsg.innerText = "İsim yazmalısınız.";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (passInput.value !== PASSWORD) {
+                errorMsg.innerText = "Şifre Yanlış!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+            loading.style.display = 'block';
+            myNickname = nameInput.value;
+
+            if(myPeerId) {
+                completeLogin();
+            } else {
+                myPeer.on('open', id => {
+                    myPeerId = id;
+                    completeLogin();
+                });
+            }
+        }
+
+        function completeLogin() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'flex';
+            
+            socket.emit('join-room', roomId, myPeerId, myNickname);
+
+            document.getElementById('msg-input').addEventListener('keydown', (e) => {
+                if(e.key === 'Enter') sendMessage();
+            });
+
+            prepareMedia();
+        }
+
+        // --- MEDYA SİSTEMİ ---
+        function prepareMedia() {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                myStream = stream;
+                myStream.getVideoTracks()[0].enabled = false;
+                myStream.getAudioTracks()[0].enabled = false;
+
+                addVideoStream(myVideo, stream);
+
+                myPeer.on('call', call => {
+                    call.answer(stream);
+                    const video = document.createElement('video');
+                    call.on('stream', userStream => addVideoStream(video, userStream));
+                });
+
+                socket.on('user-connected', (userId, name) => {
+                    connectToNewUser(userId, stream);
+                });
+            })
+            .catch(err => {
+                console.log("Kamera/Mikrofon izni yok.");
+                document.getElementById('cam-toggle-btn').innerText = "Kamera İzni Yok";
+                document.getElementById('cam-toggle-btn').disabled = true;
+            });
+        }
+
+        function toggleCamera() {
+            if(!myStream) return alert("Kamera bulunamadı!");
+            
+            const videoTrack = myStream.getVideoTracks()[0];
+            const audioTrack = myStream.getAudioTracks()[0];
+            const btn = document.getElementById('cam-toggle-btn');
+            const grid = document.getElementById('video-grid');
+
+            videoTrack.enabled = !videoTrack.enabled;
+            audioTrack.enabled = videoTrack.enabled;
+
+            if(videoTrack.enabled) {
+                btn.innerHTML = '<i class="fas fa-video"></i> Kamerayı Kapat';
+                btn.classList.add('active');
+                grid.classList.add('open');
+            } else {
+                btn.innerHTML = '<i class="fas fa-video-slash"></i> Kamerayı Aç';
+                btn.classList.remove('active');
+            }
+        }
+
+        function connectToNewUser(userId, stream) {
+            const call = myPeer.call(userId, stream);
+            const video = document.createElement('video');
+            call.on('stream', stream => addVideoStream(video, stream));
+            call.on('close', () => video.remove());
+        }
+
+        function addVideoStream(video, stream) {
+            video.srcObject = stream;
+            video.addEventListener('loadedmetadata', () => video.play());
+            videoGrid.append(video);
+        }
+
+        // --- MESAJ & SES & RESİM ---
+        socket.on('createMessage', data => renderMessage(data));
+        socket.on('load-history', history => history.forEach(renderMessage));
+        
+        function sendMessage() {
+            const input = document.getElementById('msg-input');
+            if(input.value.trim()) {
+                socket.emit('message', input.value);
+                input.value = '';
+            }
+        }
+
+        // GÜNCELLENEN RESİM GÖNDERME FONKSİYONU
+        function sendImage() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            // Boyut Kontrolü (100 MB altı olmalı)
+            if (file.size > 100 * 1024 * 1024) { 
+                alert("Dosya çok büyük!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                socket.emit('image', e.target.result);
+                fileInput.value = ''; 
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Ses Kayıt
+        let mediaRecorder;
+        let audioChunks = [];
+        const micBtn = document.getElementById('mic-btn');
+
+        const startRec = (e) => {
+            if(e.cancelable) e.preventDefault();
+            if(!navigator.mediaDevices) return alert("Mikrofon izni yok!");
+            
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                audioChunks = [];
+                micBtn.classList.add('recording');
+                
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = () => socket.emit('voice', reader.result);
+                    stream.getTracks().forEach(t => t.stop());
+                };
+            });
+        };
+        const stopRec = (e) => {
+            if(e.cancelable) e.preventDefault();
+            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                micBtn.classList.remove('recording');
+            }
+        };
+        micBtn.addEventListener('mousedown', startRec);
+        micBtn.addEventListener('mouseup', stopRec);
+        micBtn.addEventListener('touchstart', startRec);
+        micBtn.addEventListener('touchend', stopRec);
+
+        function renderMessage(data) {
+            const chatArea = document.getElementById('chat-area');
+            const isMine = data.senderId === socket.id;
+            const div = document.createElement('div');
+            div.className = `message ${isMine ? 'mine' : 'theirs'}`;
+            
+            let content = '';
+            if (data.type === 'text') content = `<div>${data.content}</div>`;
+            else if (data.type === 'image') content = `<img src="${data.content}">`;
+            else if (data.type === 'audio') content = `<audio controls src="${data.content}"></audio>`;
+
+            div.innerHTML = `<span class="sender-name" style="${isMine?'display:none':''}">${data.user}</span>${content}<div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</body>
+</html>
