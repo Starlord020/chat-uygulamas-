@@ -6,27 +6,29 @@
     <title>Mevlüt & Ayşegül</title>
     <link rel="manifest" href="/manifest.json">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* --- YENİ MOR TEMA PALETİ --- */
-            --bg-color: #0f0c13;        /* Çok koyu mor/siyah */
-            --header-bg: #1a1625;       /* Header rengi */
-            --chat-bg: #130f1a;         /* Sohbet arka planı */
-            --input-bg: #2b2636;        /* Yazı yazma kutusu */
+            /* --- PREMIUM DARK PURPLE TEMA --- */
+            --bg-color: #050406;        /* Neredeyse siyah, çok koyu mor */
+            --header-bg: rgba(20, 10, 30, 0.75); /* Cam efektli header */
+            --chat-bg: #0b0712;         /* Sohbet arka planı */
+            --input-bg: #1a1623;        /* Input kutusu */
             
-            --accent: #8e44ad;          /* Ana Vurgu Rengi (Mor) */
-            --accent-hover: #9b59b6;    /* Üzerine gelince (Açık Mor) */
-            --gradient-btn: linear-gradient(135deg, #8e44ad, #c0392b); /* Buton gradyanı */
+            --accent: #9b59b6;          /* Ana Mor */
+            --accent-glow: rgba(155, 89, 182, 0.5); /* Buton parlaması */
+            --accent-gradient: linear-gradient(135deg, #8e44ad, #6c5ce7); /* Buton gradyanı */
             
-            --my-msg: #6c5ce7;          /* Benim mesajım (İndigo/Mor) */
-            --other-msg: #2d2838;       /* Karşı tarafın mesajı */
+            --my-msg-bg: linear-gradient(135deg, #6D214F, #2c3e50); /* Koyu mor-lacivert geçiş */
+            --my-msg-border: #8e44ad;
             
-            --text-primary: #f5f6fa;
-            --text-secondary: #a4b0be;
+            --other-msg-bg: #1f1b26;    /* Karşı taraf */
+            
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
             --danger: #e74c3c;
-            --success: #00b894;
+            --success: #2ecc71;
             
             --app-height: 100dvh; 
         }
@@ -35,7 +37,7 @@
         
         body { 
             margin: 0; 
-            font-family: 'Inter', sans-serif; /* Daha modern font */
+            font-family: 'Outfit', sans-serif; /* Daha yumuşak, modern font */
             background-color: var(--bg-color); 
             color: var(--text-primary); 
             height: var(--app-height); 
@@ -44,84 +46,98 @@
             overflow: hidden; 
         }
 
+        /* ÖZEL SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #4a3b55; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
         .hidden { display: none !important; }
 
         /* --- MODERN GİRİŞ EKRANI --- */
         #auth-screen, #room-pass-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle at center, #2c243b 0%, #0f0c13 100%); /* Radyal geçiş */
+            background: radial-gradient(circle at center, #2e1a38 0%, #050406 100%); 
             z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
         
         .auth-container { 
             width: 90%; max-width: 380px; text-align: center; 
-            background: rgba(255, 255, 255, 0.05); /* Cam Efekti */
-            backdrop-filter: blur(10px);
-            padding: 30px; border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 35px; border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .auth-tabs { display: flex; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .auth-tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 15px; }
         .auth-tab { 
-            padding: 10px 20px; cursor: pointer; color: var(--text-secondary); font-weight: 600; transition: 0.3s;
-            position: relative; top: 2px;
+            padding: 8px 16px; cursor: pointer; color: var(--text-secondary); font-weight: 600; transition: 0.3s;
+            border-radius: 20px; font-size: 14px;
         }
-        .auth-tab.active { color: var(--accent-hover); border-bottom: 2px solid var(--accent); }
+        .auth-tab:hover { background: rgba(255,255,255,0.05); }
+        .auth-tab.active { background: var(--accent); color: white; box-shadow: 0 4px 15px var(--accent-glow); }
         
         .auth-form { display: none; flex-direction: column; gap: 15px; }
         .auth-form.active { display: flex; }
 
         .login-input { 
-            padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); 
-            text-align: center; font-size: 16px; background: rgba(0,0,0,0.3); color: white; outline: none; 
-            transition: 0.3s;
+            padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); 
+            text-align: center; font-size: 16px; background: rgba(0,0,0,0.2); color: white; outline: none; 
+            transition: 0.3s; font-family: inherit;
         }
-        .login-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.5); }
+        .login-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 15px rgba(142, 68, 173, 0.2); }
 
-        /* --- MODERN BUTONLAR --- */
+        /* --- MODERN BUTONLAR (GÜZELLEŞTİRİLDİ) --- */
         button.primary-btn { 
-            padding: 15px; border-radius: 12px; border: none; 
-            background: var(--gradient-btn); /* Gradyan renk */
-            font-weight: 600; cursor: pointer; font-size: 16px; color: white; 
-            transition: 0.3s; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
-            text-transform: uppercase; letter-spacing: 1px;
+            padding: 15px; border-radius: 15px; border: none; 
+            background: var(--accent-gradient);
+            font-weight: 600; cursor: pointer; font-size: 15px; color: white; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            letter-spacing: 0.5px;
         }
-        button.primary-btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(142, 68, 173, 0.4); }
+        button.primary-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); filter: brightness(1.1); }
+        button.primary-btn:active { transform: scale(0.98); }
 
         .status-msg { margin-top: 15px; font-size: 14px; min-height: 20px; font-weight: 500; }
-        .error { color: #ff6b6b; } .success { color: #1dd1a1; }
+        .error { color: #ff6b6b; text-shadow: 0 0 10px rgba(255, 107, 107, 0.3); } 
+        .success { color: #1dd1a1; text-shadow: 0 0 10px rgba(29, 209, 161, 0.3); }
 
-        /* --- HEADER (Üst Çubuk) --- */
+        /* --- HEADER (CAM EFEKTLİ) --- */
         #app-header { 
-            background-color: var(--header-bg); 
-            padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 100; flex-shrink: 0;
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; 
+            position: relative; z-index: 100; flex-shrink: 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .header-info { display: flex; align-items: center; gap: 12px; }
+        .header-info { display: flex; align-items: center; gap: 14px; }
         .header-avatar { 
-            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; 
-            border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(142, 68, 173, 0.3);
+            width: 48px; height: 48px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent-glow);
         }
-        .header-text h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
-        .header-text span { font-size: 12px; color: var(--accent-hover); font-weight: 500; }
+        .header-text h3 { margin: 0; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .header-text span { font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 5px; }
+        .header-text span::before { content: ''; width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
         
-        .header-actions { display: flex; gap: 10px; }
+        .header-actions { display: flex; gap: 8px; }
         
-        /* Yuvarlak İkon Butonlar */
+        /* Butonlar - İkonlar */
         .circle-btn { 
-            width: 42px; height: 42px; border-radius: 50%; border: none; 
-            background: rgba(255,255,255,0.08); color: var(--text-primary); 
-            font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 40px; height: 40px; border-radius: 12px; border: none; 
+            background: rgba(255,255,255,0.05); color: #ccc; 
+            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            transition: all 0.3s;
         }
-        .circle-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        .circle-btn:active { transform: scale(0.9); }
+        .circle-btn:hover { background: rgba(255,255,255,0.15); color: white; transform: translateY(-2px); }
         
         .circle-btn.active { 
             background: var(--accent); color: white; 
-            box-shadow: 0 0 15px rgba(142, 68, 173, 0.6); 
+            box-shadow: 0 0 15px var(--accent-glow); 
         }
         .circle-btn.screen-active { 
             background: #0984e3; color: white; 
@@ -131,105 +147,121 @@
         /* --- VIDEO ALANI --- */
         #video-container { 
             background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; 
-            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 -20px 30px rgba(0,0,0,0.8);
         }
-        #video-container.visible { height: 160px; border-bottom: 1px solid #333; }
-        #video-grid { display: flex; overflow-x: auto; gap: 10px; height: 100%; padding: 15px; align-items: center; scrollbar-width: none; }
+        /* visible sınıfı artık butonla kontrol edilecek */
+        #video-container.visible { height: 180px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        #video-grid { display: flex; overflow-x: auto; gap: 12px; height: 100%; padding: 15px; align-items: center; scrollbar-width: none; }
         
         video { 
-            height: 100%; border-radius: 10px; border: 2px solid #333; min-width: 140px; background: #151515; cursor: pointer; transition: 0.3s; 
+            height: 100%; border-radius: 12px; border: 2px solid #333; min-width: 150px; background: #151515; cursor: pointer; transition: 0.3s; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-        video:hover { border-color: var(--accent); transform: scale(1.02); }
+        video:hover { border-color: var(--accent); transform: scale(1.03); }
         video.camera-mode { object-fit: cover; } video.screen-mode { object-fit: contain; border-color: #0984e3; }
 
-        /* --- SOHBET --- */
+        /* --- SOHBET ALANI --- */
         #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
         #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: all 0.3s; }
         
         #chat-area { 
-            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; 
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; 
             background-color: var(--chat-bg); 
-            /* Hafif desenli modern arka plan */
-            background-image: radial-gradient(#2c243b 1px, transparent 1px);
-            background-size: 20px 20px;
+            /* Hafif desen */
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 25px 25px;
         }
 
-        /* --- MESAJ BALONLARI --- */
+        /* MESAJ BALONLARI */
         .message { 
-            max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 15px; margin-bottom: 5px; 
-            position: relative; word-wrap: break-word; line-height: 1.4;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; margin-bottom: 2px; 
+            position: relative; word-wrap: break-word; line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: slideIn 0.2s ease-out;
         }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .message.mine { 
-            align-self: flex-end; background-color: var(--my-msg); border-bottom-right-radius: 2px; 
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Hafif gradyan */
+            align-self: flex-end; 
+            background: var(--my-msg-bg);
+            color: white;
+            border-bottom-right-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .message.theirs { 
-            align-self: flex-start; background-color: var(--other-msg); border-bottom-left-radius: 2px; 
+            align-self: flex-start; 
+            background-color: var(--other-msg-bg); 
+            border-bottom-left-radius: 4px;
             color: #dcdde1;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .sender-name { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: bold; display: block; margin-bottom: 4px; }
-        .message img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+        .sender-name { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .message img { max-width: 100%; border-radius: 12px; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); }
         
         .system-link-btn { 
             display: inline-block; margin-top: 8px; 
-            background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; 
+            background: rgba(116, 185, 255, 0.1); padding: 8px 12px; border-radius: 8px; 
             color: #74b9ff; text-decoration: none; font-weight: bold; cursor: pointer; 
-            border: 1px solid rgba(116, 185, 255, 0.3); font-size: 13px;
+            border: 1px solid rgba(116, 185, 255, 0.3); font-size: 12px;
             transition: 0.2s;
         }
-        .system-link-btn:hover { background: rgba(116, 185, 255, 0.1); }
+        .system-link-btn:hover { background: rgba(116, 185, 255, 0.2); }
 
-        /* --- ALT INPUT ALANI --- */
+        /* --- ALT INPUT ALANI (Float Design) --- */
         #input-area { 
-            background: var(--header-bg); padding: 10px 15px; display: flex; align-items: center; gap: 10px; width: 100%; 
+            background: var(--header-bg); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 15px; display: flex; align-items: center; gap: 12px; width: 100%; 
             border-top: 1px solid rgba(255,255,255,0.05);
         }
         #input-area input { 
-            flex: 1; padding: 12px 20px; border-radius: 25px; border: none; 
+            flex: 1; padding: 14px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05);
             background: var(--input-bg); color: white; outline: none; font-size: 15px; 
             transition: 0.3s;
         }
-        #input-area input:focus { box-shadow: 0 0 0 2px var(--accent); }
+        #input-area input:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 10px rgba(142, 68, 173, 0.1); }
         
         .icon-btn { 
             background: none; border: none; color: var(--text-secondary); font-size: 20px; 
-            padding: 10px; cursor: pointer; border-radius: 50%; transition: 0.2s; 
+            padding: 10px; cursor: pointer; border-radius: 50%; transition: 0.2s; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .icon-btn:hover { color: var(--accent-hover); background: rgba(255,255,255,0.05); }
+        .icon-btn:hover { color: var(--accent); background: rgba(255,255,255,0.05); transform: rotate(10deg); }
         
         #voice-msg-btn { 
-            width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; 
+            width: 48px; height: 48px; background: var(--accent); border-radius: 50%; color: white; 
             display: flex; align-items: center; justify-content: center; font-size: 20px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4); border: none; cursor: pointer; transition: 0.2s;
         }
         #voice-msg-btn:active { transform: scale(0.9); }
-        #voice-msg-btn.recording { background: var(--danger); animation: pulse 1s infinite; }
+        #voice-msg-btn.recording { background: var(--danger); animation: pulse 1s infinite; box-shadow: 0 0 15px var(--danger); }
 
         /* USER LIST POPUP */
         #user-list-popup { 
-            position: absolute; top: 70px; right: 15px; width: 240px; 
-            background: rgba(30, 25, 40, 0.95); backdrop-filter: blur(10px);
-            border-radius: 15px; padding: 0; display: none; flex-direction: column; z-index: 2000; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            position: absolute; top: 75px; right: 15px; width: 260px; 
+            background: rgba(20, 15, 25, 0.95); backdrop-filter: blur(15px);
+            border-radius: 18px; padding: 0; display: none; flex-direction: column; z-index: 2000; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.2s ease-out;
         }
-        #user-list-popup h4 { margin: 0; padding: 15px; background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); cursor: pointer; transition: 0.2s; }
-        #user-list-content li:hover { background: rgba(255,255,255,0.05); }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+        #user-list-popup h4 { margin: 0; padding: 18px; background: rgba(255,255,255,0.03); color: var(--text-primary); font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 600; letter-spacing: 0.5px; }
+        #user-list-content { list-style: none; padding: 5px 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        #user-list-content li { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 14px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); cursor: pointer; transition: 0.2s; }
+        #user-list-content li:hover { background: rgba(255,255,255,0.05); padding-left: 25px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
         .online .status-dot { background: var(--success); box-shadow: 0 0 8px var(--success); }
-        .media-icons { margin-left: auto; display: flex; gap: 8px; }
+        .media-icons { margin-left: auto; display: flex; gap: 8px; opacity: 0.8; }
 
         /* FULLSCREEN & CINEMA */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { 
-            position: absolute; top: 20px; left: 20px; 
-            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); 
-            padding: 10px 20px; border-radius: 30px; cursor: pointer; z-index: 5002; backdrop-filter: blur(5px);
+            position: absolute; top: 30px; left: 30px; 
+            background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); 
+            padding: 12px 24px; border-radius: 30px; cursor: pointer; z-index: 5002; backdrop-filter: blur(5px);
+            transition: 0.3s;
         }
+        #close-fs-btn:hover { background: rgba(255,255,255,0.1); }
 
         /* YÜZEN SOHBET (Güzel Görünüm) */
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
@@ -252,7 +284,7 @@
         
         body.cinema-mode #chat-wrapper.minimized { 
             width: 60px; height: 60px; border-radius: 50%; 
-            background: var(--gradient-btn); 
+            background: var(--accent-gradient); 
             right: 20px; bottom: 30px; cursor: pointer; 
             box-shadow: 0 5px 20px rgba(142, 68, 173, 0.5); overflow: visible; 
         }
@@ -262,11 +294,13 @@
         body.cinema-mode #chat-wrapper.minimized #minimize-icon { display: flex; }
 
         @media (max-width: 600px) { 
-            body.cinema-mode #chat-wrapper { width: 85%; right: 50%; transform: translateX(50%); bottom: 30px; height: 50%; } 
-            body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; bottom: 80px; }
+            body.cinema-mode #chat-wrapper { width: 90%; right: 5%; bottom: 30px; height: 50%; } 
+            body.cinema-mode #chat-wrapper.minimized { right: 20px; bottom: 80px; width: 50px; height: 50px; }
+            .auth-container { width: 85%; padding: 25px; }
+            #input-area { padding: 10px; gap: 8px; }
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); } }
     </style>
 </head>
 <body>
@@ -277,7 +311,7 @@
     </div>
 
     <div id="auth-screen">
-        <img src="image_0.png" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin-bottom: 25px; border: 4px solid var(--accent); box-shadow: 0 0 20px rgba(142, 68, 173, 0.4);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
+        <img src="image_0.png" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 30px; border: 4px solid var(--accent); box-shadow: 0 0 30px var(--accent-glow);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
         <div class="auth-container">
             <div class="auth-tabs">
                 <div class="auth-tab active" onclick="switchTab('login')">Giriş Yap</div>
@@ -298,10 +332,10 @@
     </div>
 
     <div id="room-pass-screen" style="display: none;">
-        <i class="fas fa-lock" style="font-size: 50px; color: var(--accent); margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--accent));"></i>
-        <h3 style="margin-bottom: 20px; color: var(--text-primary); font-weight: 300;">Oda Güvenlik Şifresi</h3>
-        <input type="password" id="room-pass" class="login-input" style="width: 250px;" placeholder="Oda Şifresi">
-        <button class="primary-btn" style="width: 250px; margin-top: 15px;" onclick="checkRoomPass()">Odaya Gir</button>
+        <i class="fas fa-lock" style="font-size: 60px; color: var(--accent); margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--accent-glow));"></i>
+        <h3 style="margin-bottom: 20px; color: var(--text-primary); font-weight: 300; letter-spacing: 1px;">Oda Güvenlik Şifresi</h3>
+        <input type="password" id="room-pass" class="login-input" style="width: 280px;" placeholder="Oda Şifresi">
+        <button class="primary-btn" style="width: 280px; margin-top: 20px;" onclick="checkRoomPass()">Odaya Gir</button>
         <div id="room-error" class="status-msg error"></div>
     </div>
 
@@ -315,6 +349,9 @@
                 </div>
             </div>
             <div class="header-actions">
+                <button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()" title="Video Alanını Göster/Gizle">
+                    <i class="fas fa-eye"></i>
+                </button>
                 <button class="circle-btn" onclick="toggleUserList()" title="Kişiler"><i class="fas fa-users"></i></button>
                 <button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()" title="Mikrofon"><i class="fas fa-microphone-slash"></i></button>
                 <button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()" title="Kamera"><i class="fas fa-video"></i></button>
@@ -323,7 +360,7 @@
         </header>
 
         <div id="user-list-popup">
-            <h4>Kişi Listesi</h4>
+            <h4><i class="fas fa-circle" style="font-size:10px; color:var(--success); margin-right:8px;"></i> Aktif Kişiler</h4>
             <ul id="user-list-content"></ul>
         </div>
 
@@ -419,11 +456,22 @@
             document.getElementById('msg-input').addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
         }
 
-        function checkVideoVisibility() {
+        // --- YENİ: Video Alanını Aç/Kapa Fonksiyonu ---
+        function toggleVideoContainer() {
             const container = document.getElementById('video-container');
-            if (videoGrid.childElementCount > 0) container.classList.add('visible');
-            else container.classList.remove('visible');
+            const btn = document.getElementById('toggle-video-btn');
+            
+            if (container.classList.contains('visible')) {
+                container.classList.remove('visible');
+                btn.innerHTML = '<i class="fas fa-eye"></i>'; // Kapalıyken "göster" ikonu
+            } else {
+                container.classList.add('visible');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Açıkken "gizle" ikonu
+            }
         }
+        
+        // Eski checkVideoVisibility fonksiyonunu sildim çünkü artık manuel kontrol ediyoruz.
+
         function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
         
         socket.on('update-user-list', (users) => {
@@ -509,7 +557,7 @@
             call.on('close', () => { 
                 video.remove(); 
                 delete userStreams[uid]; 
-                checkVideoVisibility(); 
+                // checkVideoVisibility(); // SİLİNDİ
             });
         }
 
@@ -535,9 +583,13 @@
                 btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-video-slash"></i>';
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId); 
                 notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
+                // Kamera açılınca video alanını otomatik gösterelim
+                if (!document.getElementById('video-container').classList.contains('visible')) {
+                    toggleVideoContainer();
+                }
             } else { 
                 btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-video"></i>';
-                myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false); 
+                myVideo.remove(); /* checkVideoVisibility(); // SİLİNDİ */ notifyMediaStatus(false,false); 
             }
             replaceTracksForEveryone(cameraStream);
         }
@@ -554,10 +606,14 @@
                 userStreams[myPeerId] = screenStream;
                 
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
-                checkVideoVisibility();
+                // checkVideoVisibility(); // SİLİNDİ
                 notifyMediaStatus(false,true); socket.emit('stream-changed', 'screen');
                 replaceTracksForEveryone(screenStream);
                 screenStream.getVideoTracks()[0].onended = () => stopScreenShare();
+                // Ekran paylaşımı açılınca video alanını otomatik gösterelim
+                if (!document.getElementById('video-container').classList.contains('visible')) {
+                    toggleVideoContainer();
+                }
             } catch(e){}
         }
 
@@ -571,7 +627,7 @@
             if(document.getElementById('cam-toggle-btn').classList.contains('active')) {
                 cam.enabled = true; notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
             } else {
-                cam.enabled = false; myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false);
+                cam.enabled = false; myVideo.remove(); /* checkVideoVisibility(); // SİLİNDİ */ notifyMediaStatus(false,false);
             }
             replaceTracksForEveryone(cameraStream);
         }
@@ -589,7 +645,7 @@
             video.addEventListener('loadedmetadata', ()=>video.play());
             if(!videoGrid.contains(video)) videoGrid.append(video);
             if(pid) videoElements[pid] = video;
-            checkVideoVisibility();
+            // checkVideoVisibility(); // SİLİNDİ
         }
 
         function openFullscreen(stream) {
