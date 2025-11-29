@@ -33,10 +33,8 @@
         }
 
         /* GİRİŞ EKRANI */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111b21; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .login-input { padding: 15px; width: 80%; max-width: 300px; border-radius: 25px; border: none; text-align: center; font-size: 16px; margin-bottom: 15px; background: #2a3942; color: white; outline: none; }
-        
         #login-screen button { padding: 15px 40px; border-radius: 25px; border: none; background: var(--accent); font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; width: 80%; max-width: 300px; }
         #error-msg { color: #ef5350; margin-top: 15px; display: none; font-weight: bold; }
         #loading { display: none; color: var(--accent); margin-top: 10px; }
@@ -44,41 +42,113 @@
         /* ANA EKRAN */
         #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
 
-        #video-container { background: var(--header-bg); padding: 5px; border-bottom: 1px solid #333; flex-shrink: 0; }
+        /* VİDEO GRID ALANI (Normal Görünüm) */
+        #video-container { background: var(--header-bg); padding: 5px; border-bottom: 1px solid #333; flex-shrink: 0; transition: all 0.3s; }
         
-        /* BUTON GRUBU */
         .btn-group { display: flex; gap: 5px; width: 100%; margin-bottom: 5px; }
-        
         .control-btn { flex: 1; padding: 10px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; }
         .control-btn.active { background: var(--accent); color: #111b21; }
         .control-btn.screen-active { background: #3498db; color: white; }
 
         #video-grid { display: flex; overflow-x: auto; gap: 8px; height: 0; transition: height 0.3s; scrollbar-width: none; margin-top: 0; }
         #video-grid.open { height: 110px; margin-top: 5px; }
-        video { height: 100%; border-radius: 8px; border: 2px solid #444; min-width: 120px; object-fit: cover; background: #000; }
+        
+        /* Video Elementleri */
+        video { height: 100%; border-radius: 8px; border: 2px solid #444; min-width: 120px; object-fit: cover; background: #000; cursor: pointer; }
+        video:hover { border-color: var(--accent); }
 
-        /* SOHBET ALANI */
+        /* --- SOHBET SARMALAYICI (Chat Wrapper) --- */
+        /* Bu div hem normal hem de yüzen modda sohbeti tutar */
+        #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: all 0.3s ease; }
+
         #chat-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background-color: var(--chat-bg); background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; overscroll-behavior: contain; }
 
+        /* GİRİŞ ÇUBUĞU */
+        #input-area { background: var(--header-bg); padding: 8px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; width: 100%; }
+        #input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
+        .icon-btn { background: none; border: none; color: #8696a0; font-size: 20px; padding: 10px; cursor: pointer; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        #mic-btn.recording { color: var(--rec-color); transform: scale(1.2); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* MESAJ STİLLERİ */
         .message { max-width: 85%; padding: 8px 10px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; }
         .message.mine { align-self: flex-end; background-color: var(--my-msg); border-top-right-radius: 0; }
         .message.theirs { align-self: flex-start; background-color: var(--other-msg); border-top-left-radius: 0; }
-        
         .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
         .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
         audio { width: 200px; height: 35px; margin-top: 5px; }
         .system-msg { align-self: center; background: rgba(31,44,52,0.8); padding: 5px 12px; border-radius: 10px; font-size: 12px; color: #aaa; margin: 5px 0; }
 
-        /* GİRİŞ ÇUBUĞU */
-        #input-area { background: var(--header-bg); padding: 8px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; width: 100%; }
-        #input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
+        /* --- TAM EKRAN (SİNEMA) MODU --- */
+        #fullscreen-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 1000; display: none;
+            justify-content: center; align-items: center;
+        }
+
+        #fullscreen-video {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        #close-fs-btn {
+            position: absolute; top: 20px; left: 20px;
+            background: rgba(0,0,0,0.5); color: white; border: none;
+            padding: 10px 15px; border-radius: 5px; font-size: 16px; cursor: pointer; z-index: 1002;
+        }
+
+        /* --- YÜZEN SOHBET (FLOATING CHAT) CSS --- */
+        /* Bu class, body'ye 'cinema-mode' eklendiğinde devreye girer */
+        body.cinema-mode #main-container {
+            /* Normal akışı bozma ama ana container arkada kalsın */
+        }
         
-        .icon-btn { background: none; border: none; color: #8696a0; font-size: 20px; padding: 10px; cursor: pointer; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
-        #mic-btn.recording { color: var(--rec-color); transform: scale(1.2); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        body.cinema-mode #video-container { display: none; } /* Normal videoları gizle */
+
+        body.cinema-mode #chat-wrapper {
+            position: fixed;
+            right: 20px; bottom: 20px;
+            width: 300px; height: 400px;
+            background: rgba(0, 0, 0, 0.6); /* Yarı saydam */
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            z-index: 1001; /* Videonun üstünde olsun */
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+
+        /* Mobilde yüzen sohbeti biraz daha geniş yap */
+        @media (max-width: 600px) {
+            body.cinema-mode #chat-wrapper {
+                width: 70%; right: 10px; bottom: 10px; height: 50%;
+            }
+        }
+
+        /* Yüzen Sohbet Başlığı (Kapat/Aç için) */
+        #floating-header {
+            display: none; /* Normalde gizli */
+            padding: 8px; background: rgba(0,0,0,0.8);
+            color: white; font-size: 12px;
+            justify-content: space-between; align-items: center;
+            cursor: move;
+        }
+
+        body.cinema-mode #floating-header { display: flex; }
+
+        /* Gizlenmiş Yüzen Sohbet */
+        body.cinema-mode #chat-wrapper.minimized {
+            height: 40px; overflow: hidden; width: 150px;
+        }
+        body.cinema-mode #chat-wrapper.minimized #chat-area,
+        body.cinema-mode #chat-wrapper.minimized #input-area { display: none; }
+
     </style>
 </head>
 <body>
+
+    <div id="fullscreen-layer">
+        <button id="close-fs-btn" onclick="closeFullscreen()"><i class="fas fa-times"></i> Kapat</button>
+        <video id="fullscreen-video" autoplay></video>
+    </div>
 
     <div id="login-screen">
         <img src="image_0.png" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid var(--accent);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
@@ -101,16 +171,26 @@
                 </button>
             </div>
             <div id="video-grid"></div>
+            <div style="font-size: 11px; text-align: center; color: #777; margin-top: 5px;">
+                (Büyütmek için videoya çift tıklayın)
+            </div>
         </div>
 
-        <div id="chat-area"></div>
+        <div id="chat-wrapper">
+            <div id="floating-header">
+                <span>Sohbet</span>
+                <i class="fas fa-minus" onclick="toggleMinimizeChat()" style="cursor: pointer; padding: 5px;"></i>
+            </div>
 
-        <div id="input-area">
-            <input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
-            <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-camera"></i></button>
-            <input type="text" id="msg-input" placeholder="Mesaj..." autocomplete="off">
-            <button class="icon-btn" onclick="sendMessage()" style="color: var(--accent);"><i class="fas fa-paper-plane"></i></button>
-            <button class="icon-btn" id="mic-btn"><i class="fas fa-microphone"></i></button>
+            <div id="chat-area"></div>
+
+            <div id="input-area">
+                <input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
+                <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-camera"></i></button>
+                <input type="text" id="msg-input" placeholder="Mesaj..." autocomplete="off">
+                <button class="icon-btn" onclick="sendMessage()" style="color: var(--accent);"><i class="fas fa-paper-plane"></i></button>
+                <button class="icon-btn" id="mic-btn"><i class="fas fa-microphone"></i></button>
+            </div>
         </div>
     </div>
 
@@ -118,7 +198,6 @@
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     
     <script>
-        // Görsel Görüş Alanı Fix (Mobil Klavye)
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
                 document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
@@ -130,17 +209,15 @@
         const socket = io();
         let myPeer, myPeerId;
         let myStream = null;
-        let screenStream = null; // Ekran paylaşımı için
+        let screenStream = null;
         let myNickname = "";
         const roomId = "ozel-oda-v1";
         const PASSWORD = "mevlüthanayşegül"; 
-
-        // Aktif aramaları takip etmek için
         const activeCalls = {};
 
         const videoGrid = document.getElementById('video-grid');
         const myVideo = document.createElement('video');
-        myVideo.muted = true;
+        myVideo.muted = true; // Kendi videon sessiz
 
         myPeer = new Peer(undefined, {
             path: '/peerjs',
@@ -185,18 +262,23 @@
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 myStream = stream;
-                // Başlangıçta kapalı
                 myStream.getVideoTracks()[0].enabled = false;
                 myStream.getAudioTracks()[0].enabled = false;
+                
+                // Kendi videoma tıklandığında büyüt
+                myVideo.ondblclick = () => openFullscreen(stream);
                 addVideoStream(myVideo, stream);
                 
                 myPeer.on('call', call => {
                     call.answer(stream);
                     const video = document.createElement('video');
-                    // Gelen aramayı kaydet
                     activeCalls[call.peer] = call;
                     
-                    call.on('stream', s => addVideoStream(video, s));
+                    call.on('stream', s => {
+                        // Gelen videoya tıklandığında büyüt
+                        video.ondblclick = () => openFullscreen(s);
+                        addVideoStream(video, s);
+                    });
                 });
 
                 socket.on('user-connected', (userId, name) => connectToNewUser(userId, stream));
@@ -208,10 +290,49 @@
             });
         }
 
-        // --- KAMERA AÇ/KAPAT ---
+        // --- TAM EKRAN / YÜZEN SOHBET MANTIĞI ---
+        function openFullscreen(stream) {
+            const fsLayer = document.getElementById('fullscreen-layer');
+            const fsVideo = document.getElementById('fullscreen-video');
+            
+            // 1. Büyük videoya kaynağı ver
+            fsVideo.srcObject = stream;
+            
+            // 2. Tam ekran katmanını aç
+            fsLayer.style.display = 'flex';
+            
+            // 3. Body'ye 'cinema-mode' sınıfı ekle (Sohbeti yüzdürmek için)
+            document.body.classList.add('cinema-mode');
+        }
+
+        function closeFullscreen() {
+            const fsLayer = document.getElementById('fullscreen-layer');
+            const fsVideo = document.getElementById('fullscreen-video');
+            
+            fsLayer.style.display = 'none';
+            fsVideo.srcObject = null; // Kaynağı boşalt
+            
+            document.body.classList.remove('cinema-mode');
+            
+            // Eğer sohbet küçültülmüşse onu da geri aç
+            document.getElementById('chat-wrapper').classList.remove('minimized');
+        }
+
+        function toggleMinimizeChat() {
+            const wrapper = document.getElementById('chat-wrapper');
+            wrapper.classList.toggle('minimized');
+            
+            const icon = wrapper.querySelector('#floating-header i');
+            if(wrapper.classList.contains('minimized')) {
+                icon.className = "fas fa-expand";
+            } else {
+                icon.className = "fas fa-minus";
+            }
+        }
+
+        // --- DİĞER FONKSİYONLAR ---
         function toggleCamera() {
             if(!myStream) return alert("Kamera bulunamadı!");
-            // Eğer ekran paylaşımı açıksa önce onu kapat
             if(screenStream) stopScreenShare();
 
             const vTrack = myStream.getVideoTracks()[0];
@@ -232,89 +353,62 @@
             }
         }
 
-        // --- EKRAN PAYLAŞMA (YENİ ÖZELLİK) ---
         async function toggleScreenShare() {
             const screenBtn = document.getElementById('screen-share-btn');
-
-            // Eğer zaten paylaşılıyorsa -> DURDUR
-            if (screenStream) {
-                stopScreenShare();
-                return;
-            }
+            if (screenStream) { stopScreenShare(); return; }
 
             try {
-                // Ekranı iste
                 screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
                 const screenTrack = screenStream.getVideoTracks()[0];
-
-                // Buton rengini değiştir
                 screenBtn.innerHTML = '<i class="fas fa-stop-circle"></i> Durdur';
                 screenBtn.classList.add('screen-active');
-                document.getElementById('video-grid').classList.add('open'); // Video alanını aç
+                document.getElementById('video-grid').classList.add('open'); 
 
-                // 1. Kendi ekranımda göster (Kameranın yerine)
-                const currentVideoTrack = myStream.getVideoTracks()[0];
-                currentVideoTrack.enabled = false; // Kamerayı geçici durdur
-                // Sadece track değişimi yapmıyoruz, video src güncelliyoruz
+                // Kendi görüntünü ekrana çevir
+                // NOT: Kendi ekranını kendine göstermek yerine yine de srcObject değiştirelim
                 myVideo.srcObject = screenStream;
+                myVideo.ondblclick = () => openFullscreen(screenStream); // Ekran paylaşımını da büyütebil
 
-                // 2. Karşı tarafa giden akışı değiştir
-                // Tüm aktif görüşmeleri bul ve video izini (track) değiştir
                 for (let peerId in activeCalls) {
                     const sender = activeCalls[peerId].peerConnection.getSenders().find((s) => s.track.kind === "video");
-                    if (sender) {
-                        sender.replaceTrack(screenTrack);
-                    }
+                    if (sender) sender.replaceTrack(screenTrack);
                 }
 
-                // Ekran paylaşımı tarayıcıdan "Paylaşımı Durdur" ile biterse
                 screenTrack.onended = () => stopScreenShare();
 
-            } catch (err) {
-                console.error("Ekran paylaşımı hatası:", err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         function stopScreenShare() {
             if (!screenStream) return;
-
             const screenBtn = document.getElementById('screen-share-btn');
-            const screenTrack = screenStream.getVideoTracks()[0];
-            screenTrack.stop(); // Paylaşımı kes
-
+            screenStream.getVideoTracks()[0].stop();
             screenStream = null;
             screenBtn.innerHTML = '<i class="fas fa-desktop"></i> Ekran';
             screenBtn.classList.remove('screen-active');
 
-            // Kameraya geri dön
-            myVideo.srcObject = myStream; // Kendi videomu eski haline getir
-            const cameraTrack = myStream.getVideoTracks()[0];
-            
-            // Eğer kamera butonu "Açık" konumdaysa kamerayı tekrar aktif et
-            const camBtn = document.getElementById('cam-toggle-btn');
-            if(camBtn.classList.contains('active')) {
-                cameraTrack.enabled = true;
-            } else {
-                cameraTrack.enabled = false;
-            }
+            myVideo.srcObject = myStream; 
+            myVideo.ondblclick = () => openFullscreen(myStream);
 
-            // Karşı tarafa tekrar kamera görüntüsünü gönder
+            const cameraTrack = myStream.getVideoTracks()[0];
+            const camBtn = document.getElementById('cam-toggle-btn');
+            if(camBtn.classList.contains('active')) cameraTrack.enabled = true;
+            else cameraTrack.enabled = false;
+
             for (let peerId in activeCalls) {
                 const sender = activeCalls[peerId].peerConnection.getSenders().find((s) => s.track.kind === "video");
-                if (sender) {
-                    sender.replaceTrack(cameraTrack);
-                }
+                if (sender) sender.replaceTrack(cameraTrack);
             }
         }
 
         function connectToNewUser(userId, stream) {
             const call = myPeer.call(userId, stream);
             const video = document.createElement('video');
-            
-            // Giden aramayı kaydet
             activeCalls[userId] = call;
-
-            call.on('stream', s => addVideoStream(video, s));
+            call.on('stream', s => {
+                video.ondblclick = () => openFullscreen(s);
+                addVideoStream(video, s);
+            });
             call.on('close', () => video.remove());
         }
 
@@ -324,7 +418,6 @@
             videoGrid.append(video);
         }
 
-        // --- DİĞER FONKSİYONLAR AYNI ---
         socket.on('createMessage', data => renderMessage(data));
         socket.on('load-history', history => history.forEach(renderMessage));
         
