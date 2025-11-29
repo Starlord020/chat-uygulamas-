@@ -53,14 +53,13 @@
         #voice-msg-btn { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         #voice-msg-btn.recording { background: #e74c3c; animation: pulse 1s infinite; }
 
-        /* LIST & POPUP */
+        /* USER LIST POPUP */
         #user-list-popup { position: absolute; top: 60px; right: 10px; width: 220px; background: #2a3942; border-radius: 10px; padding: 0; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         #user-list-popup h4 { margin: 0; padding: 12px; background: #202c33; color: var(--text-primary); font-size: 14px; border-bottom: 1px solid #333; }
         #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
-        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); }
+        #user-list-content li { padding: 10px 15px; border-bottom: 1px solid #333; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-primary); cursor: pointer; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
         .online .status-dot { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
-        .offline { color: #777; }
         .media-icons { margin-left: auto; display: flex; gap: 5px; }
         .media-icon { font-size: 12px; }
 
@@ -68,7 +67,6 @@
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 5002; }
-        
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
         #floating-header { display: none; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(0,0,0,0.5); color: white; border-top-left-radius: 15px; border-top-right-radius: 15px; cursor: pointer; }
         #notification-badge { position: absolute; top: -5px; right: -5px; background-color: #e74c3c; color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid #121212; animation: bounce 0.5s; }
@@ -76,11 +74,8 @@
         body.cinema-mode #chat-wrapper { position: fixed; right: 20px; bottom: 20px; width: 320px; height: 450px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border-radius: 15px; z-index: 5001; border: 1px solid rgba(255,255,255,0.1); }
         body.cinema-mode #floating-header { display: flex; }
         body.cinema-mode #chat-wrapper.minimized { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); right: 20px; bottom: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: visible; }
-        body.cinema-mode #chat-wrapper.minimized #chat-area, 
-        body.cinema-mode #chat-wrapper.minimized #input-area, 
-        body.cinema-mode #chat-wrapper.minimized #floating-header { display: none; }
+        body.cinema-mode #chat-wrapper.minimized #chat-area, body.cinema-mode #chat-wrapper.minimized #input-area, body.cinema-mode #chat-wrapper.minimized #floating-header { display: none; }
         body.cinema-mode #chat-wrapper.minimized #minimize-icon { display: flex; }
-
         @media (max-width: 600px) { 
             body.cinema-mode #chat-wrapper { width: 75%; right: 10px; bottom: 80px; height: 45%; } 
             body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; }
@@ -92,8 +87,6 @@
         .sender-name { font-size: 12px; color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 2px; }
         .message img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
         .system-link-btn { display: inline-block; margin-top: 5px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 5px; color: #3498db; text-decoration: none; font-weight: bold; cursor: pointer; border: 1px solid rgba(52, 152, 219, 0.3); }
-        .system-link-btn:active { background: rgba(52, 152, 219, 0.2); }
-        
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
@@ -201,13 +194,15 @@
 
         const videoGrid = document.getElementById('video-grid');
         const activeCalls = {};
-        const videoElements = {}; 
+        
+        // ÖNEMLİ: Gelen akışları kaydetmek için bir nesne
+        const userStreams = {}; 
         
         const myVideo = document.createElement('video');
         myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
         myVideo.className = 'camera-mode';
 
-        // AUTH
+        // AUTH & UI
         function switchTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -235,7 +230,6 @@
 
         function startChatApp() {
             document.getElementById('main-container').style.display = 'flex';
-            // STUN SUNUCULARI (Google)
             myPeer = new Peer(undefined, { 
                 path: '/peerjs', 
                 host: location.hostname, 
@@ -266,40 +260,33 @@
                     if (u.screen) iconsHtml += `<i class="fas fa-desktop media-icon" style="color:#3498db"></i>`;
                 }
                 li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> <div class="media-icons">${iconsHtml}</div>`;
-                if(u.online && (u.cam || u.screen)) { li.style.cursor = 'pointer'; li.onclick = () => window.focusUserVideo(u.peerId); }
+                if(u.online && (u.cam || u.screen)) { li.onclick = () => window.focusUserVideo(u.peerId); }
                 list.appendChild(li);
             });
         });
 
-        // --- İZLEME FONKSİYONU (DÜZELTİLDİ) ---
+        // --- DÜZELTİLMİŞ İZLEME FONKSİYONU ---
         window.focusUserVideo = function(pid) {
-            // 1. Önce Video Elementlerinde ara
+            // 1. Kendim miyim?
             if (pid === myPeerId && currentActiveStream) {
                 openFullscreen(currentActiveStream);
                 return;
             }
-            if (videoElements[pid]) {
-                openFullscreen(videoElements[pid].srcObject);
+            // 2. Hafızada (userStreams) var mı?
+            if (userStreams[pid]) {
+                openFullscreen(userStreams[pid]);
                 return;
             }
-            // 2. Bulunamazsa Aktif Aramalardan (Calls) ara
-            if (activeCalls[pid]) {
-                // Yayını bulup açmayı dene
-                const remoteStream = activeCalls[pid].remoteStream;
-                if (remoteStream) openFullscreen(remoteStream);
-                else alert("Video yükleniyor, lütfen bekleyin...");
-            } else {
-                alert("Kullanıcı şu an yayın yapmıyor veya bağlanıyor...");
-            }
+            // 3. Bulunamadıysa
+            alert("Bağlantı bekleniyor veya kullanıcı yayında değil.");
         };
 
         function notifyMediaStatus(c, s) { socket.emit('media-status', { cam: c, screen: s }); if(c || s) socket.emit('stream-notify', { type: s?'screen':'camera', active: true }); }
         socket.on('user-stream-changed', ({ peerId, type }) => {
-            const video = videoElements[peerId];
-            if (video) video.className = (type === 'screen') ? 'screen-mode' : 'camera-mode';
+            // Mod değişikliğini sadece görsel olarak yapamayız, stream zaten userStreams içinde güncel
         });
 
-        // MEDIA
+        // --- MEDIA ---
         function prepareMedia() {
             navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
                 cameraStream = stream;
@@ -312,8 +299,11 @@
                     call.answer(currentActiveStream);
                     const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
                     activeCalls[call.peer] = call;
+                    
                     call.on('stream', s => {
-                        video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                        userStreams[call.peer] = s; // AKIŞI KAYDET
+                        video.srcObject = s; 
+                        video.ondblclick = () => openFullscreen(s);
                         addVideoStream(video, call.peer);
                     });
                 });
@@ -329,10 +319,16 @@
             const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
             activeCalls[uid] = call;
             call.on('stream', s => {
-                video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                userStreams[uid] = s; // AKIŞI KAYDET
+                video.srcObject = s; 
+                video.ondblclick = () => openFullscreen(s);
                 addVideoStream(video, uid);
             });
-            call.on('close', () => { video.remove(); delete videoElements[uid]; checkVideoVisibility(); });
+            call.on('close', () => { 
+                video.remove(); 
+                delete userStreams[uid]; // SİL
+                checkVideoVisibility(); 
+            });
         }
 
         function toggleMic() {
@@ -405,7 +401,6 @@
         function addVideoStream(video, pid) {
             video.addEventListener('loadedmetadata', ()=>video.play());
             if(!videoGrid.contains(video)) videoGrid.append(video);
-            if(pid) videoElements[pid] = video;
             checkVideoVisibility();
         }
 
@@ -414,7 +409,7 @@
             v.srcObject = stream;
             document.getElementById('fullscreen-layer').style.display = 'flex';
             document.body.classList.add('cinema-mode');
-            v.play(); // MOBİL İÇİN KRİTİK: Zorla oynat
+            v.play(); // MOBİL İÇİN OYNATMA ZORLAMASI
         }
         function closeFullscreen() {
             document.getElementById('fullscreen-layer').style.display = 'none';
