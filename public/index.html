@@ -58,7 +58,7 @@
 if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{document.documentElement.style.setProperty('--app-height',`${window.visualViewport.height}px`);scrollToBottom()});document.documentElement.style.setProperty('--app-height',`${window.visualViewport.height}px`)}
 function isMobile(){return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}
 if(isMobile())document.getElementById('screen-share-btn').style.display='none';
-const socket=io();let myPeer,myPeerId,cameraStream=null,screenStream=null,currentActiveStream=null;let myNickname="";const ROOM_ID="ozel-oda-v1";const ROOM_PASS="mevlüthanayşegül";
+const socket=io();let myPeer,myPeerId,cameraStream=null,screenStream=null,currentActiveStream=null;let myNickname="";const ROOM_ID="ozel-oda-v1";const ROOM_PASS = process.env.ODA_SIFRESI";
 const videoGrid=document.getElementById('video-grid');const activeCalls={};const videoElements={};const userStreams={};
 let connectedPeerIds=[]; let userStatusMap={};
 const myVideo=document.createElement('video');myVideo.muted=true;myVideo.setAttribute('playsinline','');myVideo.autoplay=true;myVideo.className='camera-mode';
@@ -111,3 +111,4 @@ document.addEventListener('click',e=>{if(!e.target.closest('#input-area'))emojiP
 </script>
 </body>
 </html>
+
