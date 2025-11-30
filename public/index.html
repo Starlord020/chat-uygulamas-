@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
 <title>Mevlüt & Ayşegül</title>
 <link rel="manifest" href="/manifest.json">
+<link rel="icon" href="image_0.png" type="image/png">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -75,15 +76,12 @@ socket.on('update-user-list',u=>{const l=document.getElementById('user-list-cont
     if(x.peerId && x.peerId!==myPeerId && x.online) connectedPeerIds.push(x.peerId);
     const i=document.createElement('li');i.className=x.online?'online':'offline';let h='';if(x.online){if(x.cam)h+='<i class="fas fa-video media-icon" style="color:var(--accent)"></i>';if(x.screen)h+='<i class="fas fa-desktop media-icon" style="color:#3498db"></i>'}i.innerHTML=`<div class="status-dot"></div><span>${x.nickname}</span> <div class="media-icons">${h}</div>`;if(x.online&&(x.cam||x.screen)){i.onclick=()=>window.focusUserVideo(x.peerId)}l.appendChild(i)
 });
-// Listeyi güncelledikten sonra gridi de güncelle ama DOM hatası vermeden
 updateVideoGrid(connectedPeerIds);
 });
 function updateVideoGrid(peers){
-    // Mevcut video elementlerini kontrol et, durumu değişeni güncelle
     peers.forEach(pid => {
         const el = videoElements[pid];
         if(el) {
-            // Eğer status mapte varsa ve camera/screen açıksa göster, yoksa gizle (ama silme)
             const status = userStatusMap[pid];
             if(status && (status.cam || status.screen)){
                 el.style.display = "block";
@@ -103,16 +101,18 @@ socket.on('user-connected',uid=>connectToNewUser(uid));}
 function refreshConnections(){connectedPeerIds.forEach(uid=>{if(activeCalls[uid])activeCalls[uid].close();connectToNewUser(uid)})}
 function connectToNewUser(uid){const c=myPeer.call(uid,currentActiveStream);const v=document.createElement('video');v.setAttribute('playsinline','');v.autoplay=true;activeCalls[uid]=c;c.on('stream',st=>{userStreams[uid]=st;handleIncomingStream(st, uid)});c.on('close',()=>{if(videoElements[uid])videoElements[uid].remove();delete videoElements[uid];delete userStreams[uid]})}
 function toggleMic(){if(!cameraStream)return alert("Önce Kamera/Mikrofon izni verin (Kamerayı açıp kapatın)");const a=cameraStream.getAudioTracks()[0];const b=document.getElementById('mic-toggle-btn');a.enabled=!a.enabled;if(a.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-microphone"></i>'}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-microphone-slash"></i>'}}
-function toggleCamera(){if(!cameraStream){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{cameraStream=s;currentActiveStream=s;myVideo.srcObject=s;userStreams[myPeerId]=s;const b=document.getElementById('cam-toggle-btn');b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(true,false);socket.emit('stream-changed','camera');refreshConnections()}).catch(e=>{alert("Kamera hatası: "+e)});return}
+function toggleCamera(){if(!cameraStream){navigator.mediaDevices.getUserMedia({video:true,audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(s=>{cameraStream=s;currentActiveStream=s;myVideo.srcObject=s;userStreams[myPeerId]=s;const b=document.getElementById('cam-toggle-btn');b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(true,false);socket.emit('stream-changed','camera');refreshConnections()}).catch(e=>{alert("Kamera hatası: "+e)});return}
 if(screenStream)stopScreenShare();const v=cameraStream.getVideoTracks()[0];v.enabled=!v.enabled;
 if(v.enabled){currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);}else{currentActiveStream=getEmptyStream();if(videoGrid.contains(myVideo))myVideo.remove();} 
 const b=document.getElementById('cam-toggle-btn');if(v.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';notifyMediaStatus(true,false);socket.emit('stream-changed','camera');}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-video"></i>';notifyMediaStatus(false,false)}refreshConnections()}
-async function toggleScreenShare(){if(isMobile())return;if(screenStream){stopScreenShare();return}try{screenStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});const m=cameraStream?cameraStream.getAudioTracks()[0]:null;if(m&&m.enabled)screenStream.addTrack(m);document.getElementById('screen-share-btn').classList.add('screen-active');currentActiveStream=screenStream;myVideo.srcObject=screenStream;myVideo.className='screen-mode';userStreams[myPeerId]=screenStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(false,true);socket.emit('stream-changed','screen');refreshConnections();screenStream.getVideoTracks()[0].onended=()=>stopScreenShare()}catch(e){}}
+async function toggleScreenShare(){if(isMobile())return;if(screenStream){stopScreenShare();return}try{
+// DÜZELTME: Ekran paylaşımında sesi de aktif ettik (audio: true)
+screenStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+const m=cameraStream?cameraStream.getAudioTracks()[0]:null;if(m&&m.enabled)screenStream.addTrack(m);document.getElementById('screen-share-btn').classList.add('screen-active');currentActiveStream=screenStream;myVideo.srcObject=screenStream;myVideo.className='screen-mode';userStreams[myPeerId]=screenStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(false,true);socket.emit('stream-changed','screen');refreshConnections();screenStream.getVideoTracks()[0].onended=()=>stopScreenShare()}catch(e){}}
 function stopScreenShare(){if(!screenStream)return;screenStream.getVideoTracks()[0].stop();screenStream=null;document.getElementById('screen-share-btn').classList.remove('screen-active');
 if(cameraStream && cameraStream.getVideoTracks()[0].enabled){currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;myVideo.className='camera-mode';}else{currentActiveStream=getEmptyStream();if(videoGrid.contains(myVideo))myVideo.remove();} 
 if(cameraStream){const c=cameraStream.getVideoTracks()[0];if(c.enabled){notifyMediaStatus(true,false);socket.emit('stream-changed','camera')}else{notifyMediaStatus(false,false)}}refreshConnections()}
 function handleIncomingStream(stream, pid){
-    // Var olan videoyu bul veya oluştur
     let v = videoElements[pid];
     if(!v){
         v = document.createElement('video');
@@ -120,19 +120,29 @@ function handleIncomingStream(stream, pid){
         v.autoplay=true;
         videoElements[pid] = v;
         v.addEventListener('loadedmetadata',()=>v.play().catch(e=>console.log("Play err",e)));
-        // Çift tıklama tam ekran
         v.ondblclick = () => openFullscreen(stream);
     }
     v.srcObject = stream;
-    // Status kontrolü: Eğer adamın kamerası açıksa ekle
     const status = userStatusMap[pid];
     if(status && (status.cam || status.screen)){
         if(!videoGrid.contains(v)) videoGrid.append(v);
         const c=document.getElementById('video-container');if(c.classList.contains('collapsed')){toggleVideoContainer()}
     } else {
-        // Kapalıysa DOM'dan uzak tut (ama bellekte kalsın)
         if(videoGrid.contains(v)) v.remove();
     }
+}
+// YANKI ÇÖZÜMÜ: Local videoyu mute et
+function addVideoStream(v, pid) {
+    if(pid === myPeerId) { v.muted = true; v.volume = 0; } // Kendi sesimizi duymayalım
+    if(pid&&videoElements[pid]&&videoElements[pid]!==v)videoElements[pid].remove();
+    v.addEventListener('loadedmetadata',()=>v.play());
+    if(pid)videoElements[pid]=v;
+    const status = userStatusMap[pid];
+    if(pid === myPeerId || (status && (status.cam || status.screen))){
+        if(!videoGrid.contains(v)) videoGrid.append(v);
+        const c=document.getElementById('video-container');if(c.classList.contains('collapsed')){toggleVideoContainer()}
+    }
+    v.play().catch(()=>{v.muted=true;v.play()});
 }
 function replaceTracksForEveryone(str){const v=str.getVideoTracks()[0];const a=str.getAudioTracks()[0];for(let p in activeCalls){const s=activeCalls[p].peerConnection.getSenders();const vs=s.find(k=>k.track&&k.track.kind==='video');const as=s.find(k=>k.track&&k.track.kind==='audio');if(vs&&v)vs.replaceTrack(v);if(as&&a)as.replaceTrack(a)}}
 function openFullscreen(s){const v=document.getElementById('fullscreen-video');v.srcObject=s;document.getElementById('fullscreen-layer').style.display='flex';document.body.classList.add('cinema-mode');v.muted=false;v.play().catch(e=>console.log(e))}
