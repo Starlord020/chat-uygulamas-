@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-<title>Lesa</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Mevlüt & Ayşegül</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="image_0.png" type="image/png">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -62,11 +64,11 @@
 <header id="app-header">
 <div class="header-info"><img src="image_0.png" class="header-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'"><div class="header-text"><h3>Mevlüt & Ayşegül</h3><span id="connection-status">Bağlandı</span></div></div>
 <div class="header-actions">
-<button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()"><i class="fas fa-eye-slash"></i></button>
 <button class="circle-btn" onclick="toggleUserList()"><i class="fas fa-users"></i></button>
 <button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()"><i class="fas fa-microphone-slash"></i></button>
 <button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()"><i class="fas fa-video"></i></button>
 <button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()"><i class="fas fa-desktop"></i></button>
+<button id="app-fs-btn" class="circle-btn" onclick="toggleAppFullscreen()" title="Tam Ekran"><i class="fas fa-expand"></i></button>
 <button id="logout-btn" class="circle-btn" onclick="doLogout()" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></button>
 </div></header>
 <div id="user-list-popup"><h4><i class="fas fa-circle" style="font-size:10px;color:var(--s);margin-right:8px;"></i> Aktif Kişiler</h4><ul id="user-list-content"></ul></div>
@@ -143,7 +145,6 @@ function closeImageModal(){document.getElementById('image-modal').style.display=
 let isChatMinimized=false;let unreadCount=0;
 function minimizeChat(e){e.stopPropagation();document.getElementById('chat-wrapper').classList.add('minimized');isChatMinimized=true}
 function handleWrapperClick(){if(isChatMinimized){document.getElementById('chat-wrapper').classList.remove('minimized');isChatMinimized=false;unreadCount=0;document.getElementById('notification-badge').style.display='none'}}
-// YAZIYOR ÖZELLİĞİ
 let typingTimeout;
 function handleInput(){
     toggleInputButtons();
@@ -160,8 +161,6 @@ socket.on('displayTyping', (data) => {
 socket.on('hideTyping', (data) => {
     document.getElementById('typing-indicator').style.display = 'none';
 });
-
-// YANITLAMA ÖZELLİĞİ
 let currentReply = null;
 function prepareReply(user, content){
     currentReply = { user, content: content.length > 50 ? content.substring(0,50)+'...' : content };
@@ -174,7 +173,6 @@ function cancelReply(){
     currentReply = null;
     document.getElementById('reply-preview-bar').style.display = 'none';
 }
-
 function toggleInputButtons() {
     const val = document.getElementById('msg-input').value.trim();
     const sendBtn = document.getElementById('send-btn');
@@ -183,7 +181,6 @@ function toggleInputButtons() {
     else { sendBtn.style.display = 'none'; voiceBtn.style.display = 'flex'; }
 }
 socket.on('createMessage',d=>renderMessage(d));socket.on('load-history',h=>h.forEach(renderMessage));
-
 function sendMessage(content){
     const inp = document.getElementById('msg-input');
     const val = content || inp.value.trim();
@@ -197,15 +194,12 @@ function sendMessage(content){
         inp.value='';toggleInputButtons();socket.emit('stop-typing');
     }
 }
-
-// LİNK TIKLANABİLİR YAPMA FONKSİYONU
 function linkify(text) {
     var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(urlRegex, function(url) {
         return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
 }
-
 function renderMessage(d){
     if(d.senderId && d.senderId!==socket.id){ 
         if(isChatMinimized){unreadCount++;const b=document.getElementById('notification-badge');b.innerText=unreadCount;b.style.display='flex'}
@@ -216,21 +210,17 @@ function renderMessage(d){
     const a=document.getElementById('chat-area');const m=d.senderId===socket.id;const div=document.createElement('div');
     if(d.type==='system-status'){div.className='message system-status';div.innerHTML=`<div>${d.content}</div>`;a.appendChild(div);a.scrollTop=a.scrollHeight;return}
     div.className=`message ${m?'mine':'theirs'}`;
-    
     if(d.type === 'text' && !d.content.startsWith('::SYS::')) {
         div.ondblclick = () => prepareReply(d.user, d.content);
         div.title = "Çift tıkla: Yanıtla";
     }
-
     if(d.type==='text' && !d.content.startsWith('::SYS::') && d.content.length <= 4 && /\p{Emoji}/u.test(d.content)) {
         div.classList.add('big-emoji');
     }
-
     let replyHtml = '';
     if(d.replyTo) {
         replyHtml = `<span class="reply-quote-box"><b>${d.replyTo.user}</b>: ${d.replyTo.content}</span>`;
     }
-    
     let linkPreviewHtml = '';
     if(d.preview) {
         linkPreviewHtml = `
@@ -244,12 +234,9 @@ function renderMessage(d){
             </div>
         </a>`;
     }
-
     if(d.type==='text'&&d.content.startsWith('::SYS::')){const p=d.content.split('::');div.innerHTML=`<span class="sender-name">${d.user}</span><div style="color:var(--sec);font-style:italic;">${p[3]}</div><div class="system-link-btn" onclick="window.focusUserVideo('${p[2]}')">İZLE</div><div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`}
     else{
-        // BURADA TEXT İÇERİĞİNDEKİ LİNKLERİ MAVİ YAPARIZ
         let processedContent = d.type==='text' ? linkify(d.content) : d.content;
-        
         let c=d.type==='text'?`<div>${processedContent}</div>`:d.type==='image'?`<img src="${d.content}" onclick="showImageModal(this.src)">`:`<audio controls src="${d.content}"></audio>`;
         div.innerHTML=`<span class="sender-name" style="${m?'display:none':''}">${d.user}</span>${replyHtml}${c}${linkPreviewHtml}<div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`
     }
@@ -261,13 +248,22 @@ const startRec=e=>{if(e.cancelable)e.preventDefault();if(!navigator.mediaDevices
 const stopRec=e=>{if(e.cancelable)e.preventDefault();if(mediaRec&&mediaRec.state!=='inactive'){mediaRec.stop();micBtn.classList.remove('recording')}};
 micBtn.addEventListener('mousedown',startRec);micBtn.addEventListener('mouseup',stopRec);micBtn.addEventListener('touchstart',startRec);micBtn.addEventListener('touchend',stopRec);
 function scrollToBottom(){const d=document.getElementById('chat-area');d.scrollTop=d.scrollHeight}
-const emojis=["😀","😂","😍","😭","😡","👍","👎","🎉","🔥","❤️","🍆","🍑","👋","👀","💩","🤍","💜","🍎","🤢","🤠","🥶","🥺","🤫","🤔","🥳","🤬"];
+const emojis=["😀","😂","😍","😭","😡","👍","👎","🎉","🔥","❤️","🍆","🍑","👋","👀","💩","👻","💀","🤡","🤢","🤠","🥶","🥺","🤫","🤔","🥳","🤬"];
 const emojiPicker=document.getElementById('emoji-picker');
 emojis.forEach(e=>{const s=document.createElement('div');s.className='emoji-item';s.innerText=e;s.onclick=()=>{sendMessage(e);toggleEmoji()};emojiPicker.appendChild(s)});
 function toggleEmoji(){emojiPicker.classList.toggle('show')}
 document.addEventListener('click',e=>{if(!e.target.closest('#input-area'))emojiPicker.classList.remove('show')});
+
+// TAM EKRAN İŞLEVİ (ANDROID İÇİN)
+function toggleAppFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert(`Hata: ${err.message} (${err.name})`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
 </script>
 </body>
 </html>
-
-
