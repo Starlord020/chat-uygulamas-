@@ -10,18 +10,18 @@
     
     <style>
         :root {
-            /* --- TEMA RENKLERİ --- */
-            --bg-color: #0f0c13;
-            --header-bg: #1a1625;
-            --chat-bg: #130f1a;
-            --input-bg: #2b2636;
+            /* --- YENİ MOR TEMA PALETİ --- */
+            --bg-color: #0f0c13;        /* Çok koyu mor/siyah */
+            --header-bg: #1a1625;       /* Header rengi */
+            --chat-bg: #130f1a;         /* Sohbet arka planı */
+            --input-bg: #2b2636;        /* Yazı yazma kutusu */
             
-            --accent: #8e44ad;
-            --accent-hover: #9b59b6;
-            --gradient-btn: linear-gradient(135deg, #8e44ad, #c0392b);
+            --accent: #8e44ad;          /* Ana Vurgu Rengi (Mor) */
+            --accent-hover: #9b59b6;    /* Üzerine gelince (Açık Mor) */
+            --gradient-btn: linear-gradient(135deg, #8e44ad, #c0392b); /* Buton gradyanı */
             
-            --my-msg: #6c5ce7;
-            --other-msg: #2d2838;
+            --my-msg: #6c5ce7;          /* Benim mesajım (İndigo/Mor) */
+            --other-msg: #2d2838;       /* Karşı tarafın mesajı */
             
             --text-primary: #f5f6fa;
             --text-secondary: #a4b0be;
@@ -35,28 +35,27 @@
         
         body { 
             margin: 0; 
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif; /* Daha modern font */
             background-color: var(--bg-color); 
             color: var(--text-primary); 
             height: var(--app-height); 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
-            transition: background 0.3s;
         }
 
         .hidden { display: none !important; }
 
-        /* --- GİRİŞ EKRANLARI --- */
+        /* --- MODERN GİRİŞ EKRANI --- */
         #auth-screen, #room-pass-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle at center, #2c243b 0%, #0f0c13 100%);
+            background: radial-gradient(circle at center, #2c243b 0%, #0f0c13 100%); /* Radyal geçiş */
             z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
         
         .auth-container { 
             width: 90%; max-width: 380px; text-align: center; 
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05); /* Cam Efekti */
             backdrop-filter: blur(10px);
             padding: 30px; border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -80,51 +79,58 @@
         }
         .login-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.5); }
 
-        /* --- BUTONLAR --- */
+        /* --- MODERN BUTONLAR --- */
         button.primary-btn { 
             padding: 15px; border-radius: 12px; border: none; 
-            background: var(--gradient-btn);
+            background: var(--gradient-btn); /* Gradyan renk */
             font-weight: 600; cursor: pointer; font-size: 16px; color: white; 
             transition: 0.3s; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
             text-transform: uppercase; letter-spacing: 1px;
         }
-        button.primary-btn:active { transform: scale(0.98); }
+        button.primary-btn:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(142, 68, 173, 0.4); }
 
         .status-msg { margin-top: 15px; font-size: 14px; min-height: 20px; font-weight: 500; }
         .error { color: #ff6b6b; } .success { color: #1dd1a1; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (Üst Çubuk) --- */
         #app-header { 
             background-color: var(--header-bg); 
             padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 100; flex-shrink: 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
         }
         .header-info { display: flex; align-items: center; gap: 12px; }
         .header-avatar { 
             width: 45px; height: 45px; border-radius: 50%; object-fit: cover; 
             border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(142, 68, 173, 0.3);
         }
-        .header-text h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-primary); }
+        .header-text h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.5px; }
         .header-text span { font-size: 12px; color: var(--accent-hover); font-weight: 500; }
         
-        .header-actions { display: flex; gap: 8px; }
+        .header-actions { display: flex; gap: 10px; }
         
+        /* Yuvarlak İkon Butonlar */
         .circle-btn { 
-            width: 40px; height: 40px; border-radius: 50%; border: none; 
+            width: 42px; height: 42px; border-radius: 50%; border: none; 
             background: rgba(255,255,255,0.08); color: var(--text-primary); 
-            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            transition: all 0.2s;
+            font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .circle-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 15px rgba(142, 68, 173, 0.6); }
-        .circle-btn.screen-active { background: #0984e3; color: white; box-shadow: 0 0 15px rgba(9, 132, 227, 0.6); }
+        .circle-btn:active { transform: scale(0.9); }
+        
+        .circle-btn.active { 
+            background: var(--accent); color: white; 
+            box-shadow: 0 0 15px rgba(142, 68, 173, 0.6); 
+        }
+        .circle-btn.screen-active { 
+            background: #0984e3; color: white; 
+            box-shadow: 0 0 15px rgba(9, 132, 227, 0.6); 
+        }
 
-        /* --- VİDEO ALANI --- */
+        /* --- VIDEO ALANI --- */
         #video-container { 
-            background: #000; overflow: hidden; height: 0; 
-            transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; 
+            background: #000; overflow: hidden; height: 0; transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; 
             box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
         }
         #video-container.visible { height: 160px; border-bottom: 1px solid #333; }
@@ -144,18 +150,20 @@
         #chat-area { 
             flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; 
             background-color: var(--chat-bg); 
+            /* Hafif desenli modern arka plan */
             background-image: radial-gradient(#2c243b 1px, transparent 1px);
             background-size: 20px 20px;
         }
 
+        /* --- MESAJ BALONLARI --- */
         .message { 
             max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 15px; margin-bottom: 5px; 
             position: relative; word-wrap: break-word; line-height: 1.4;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .message.mine { 
-            align-self: flex-end; border-bottom-right-radius: 2px; 
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe); 
+            align-self: flex-end; background-color: var(--my-msg); border-bottom-right-radius: 2px; 
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Hafif gradyan */
         }
         .message.theirs { 
             align-self: flex-start; background-color: var(--other-msg); border-bottom-left-radius: 2px; 
@@ -165,19 +173,25 @@
         .message img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
         
         .system-link-btn { 
-            display: inline-block; margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px 12px; 
-            border-radius: 8px; color: #74b9ff; cursor: pointer; border: 1px solid rgba(116, 185, 255, 0.3); font-size: 13px;
+            display: inline-block; margin-top: 8px; 
+            background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; 
+            color: #74b9ff; text-decoration: none; font-weight: bold; cursor: pointer; 
+            border: 1px solid rgba(116, 185, 255, 0.3); font-size: 13px;
+            transition: 0.2s;
         }
+        .system-link-btn:hover { background: rgba(116, 185, 255, 0.1); }
 
-        /* --- INPUT ALANI --- */
+        /* --- ALT INPUT ALANI --- */
         #input-area { 
             background: var(--header-bg); padding: 10px 15px; display: flex; align-items: center; gap: 10px; width: 100%; 
-            border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.3s;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         #input-area input { 
             flex: 1; padding: 12px 20px; border-radius: 25px; border: none; 
             background: var(--input-bg); color: white; outline: none; font-size: 15px; 
+            transition: 0.3s;
         }
+        #input-area input:focus { box-shadow: 0 0 0 2px var(--accent); }
         
         .icon-btn { 
             background: none; border: none; color: var(--text-secondary); font-size: 20px; 
@@ -190,20 +204,25 @@
             display: flex; align-items: center; justify-content: center; font-size: 20px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; cursor: pointer; transition: 0.2s;
         }
+        #voice-msg-btn:active { transform: scale(0.9); }
         #voice-msg-btn.recording { background: var(--danger); animation: pulse 1s infinite; }
 
-        /* --- POPUPLAR --- */
+        /* USER LIST POPUP */
         #user-list-popup { 
             position: absolute; top: 70px; right: 15px; width: 240px; 
             background: rgba(30, 25, 40, 0.95); backdrop-filter: blur(10px);
             border-radius: 15px; padding: 0; display: none; flex-direction: column; z-index: 2000; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
         }
-        #user-list-content li { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); cursor: pointer; }
+        #user-list-popup h4 { margin: 0; padding: 15px; background: rgba(255,255,255,0.05); color: var(--text-primary); font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        #user-list-content { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        #user-list-content li { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); cursor: pointer; transition: 0.2s; }
+        #user-list-content li:hover { background: rgba(255,255,255,0.05); }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
         .online .status-dot { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .media-icons { margin-left: auto; display: flex; gap: 8px; }
 
-        /* --- TAM EKRAN MODU --- */
+        /* FULLSCREEN & CINEMA */
         #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; justify-content: center; align-items: center; }
         #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
         #close-fs-btn { 
@@ -212,7 +231,7 @@
             padding: 10px 20px; border-radius: 30px; cursor: pointer; z-index: 5002; backdrop-filter: blur(5px);
         }
 
-        /* --- YÜZEN SOHBET --- */
+        /* YÜZEN SOHBET (Güzel Görünüm) */
         #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
         #floating-header { 
             display: none; justify-content: space-between; align-items: center; padding: 12px 20px; 
@@ -226,48 +245,28 @@
             position: fixed; right: 20px; bottom: 20px; width: 340px; height: 500px; 
             background: rgba(15, 12, 19, 0.85); backdrop-filter: blur(15px); 
             border-radius: 15px; z-index: 5001; 
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
         body.cinema-mode #floating-header { display: flex; }
+        
         body.cinema-mode #chat-wrapper.minimized { 
-            width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-btn); 
-            right: 20px; bottom: 30px; cursor: pointer; overflow: visible; 
+            width: 60px; height: 60px; border-radius: 50%; 
+            background: var(--gradient-btn); 
+            right: 20px; bottom: 30px; cursor: pointer; 
+            box-shadow: 0 5px 20px rgba(142, 68, 173, 0.5); overflow: visible; 
         }
-        body.cinema-mode #chat-wrapper.minimized #chat-area, body.cinema-mode #chat-wrapper.minimized #input-area, body.cinema-mode #chat-wrapper.minimized #floating-header { display: none; }
+        body.cinema-mode #chat-wrapper.minimized #chat-area, 
+        body.cinema-mode #chat-wrapper.minimized #input-area, 
+        body.cinema-mode #chat-wrapper.minimized #floating-header { display: none; }
         body.cinema-mode #chat-wrapper.minimized #minimize-icon { display: flex; }
 
         @media (max-width: 600px) { 
             body.cinema-mode #chat-wrapper { width: 85%; right: 50%; transform: translateX(50%); bottom: 30px; height: 50%; } 
+            body.cinema-mode #chat-wrapper.minimized { right: 20px; transform: none; bottom: 80px; }
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
-        /* --- OPTİMİZE EDİLMİŞ ARKA PLAN MODU (YENİ) --- */
-        body.bg-mode-active #video-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100% !important; 
-            z-index: 1; background: #000; border-bottom: none;
-        }
-        body.bg-mode-active #video-grid {
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; 
-            gap: 0; padding: 0; height: 100%;
-        }
-        body.bg-mode-active video {
-            flex: 1 1 50%; min-width: 50%; height: auto; max-height: 100%; 
-            border: none; border-radius: 0; object-fit: cover; box-shadow: none;
-        }
-        /* Glassmorphism Efekti */
-        body.bg-mode-active #chat-wrapper {
-            position: relative; z-index: 10; 
-            background: rgba(15, 12, 19, 0.4); /* Daha şeffaf */
-            backdrop-filter: blur(8px);
-        }
-        body.bg-mode-active #chat-area { background: transparent; background-image: none; }
-        body.bg-mode-active #app-header {
-            background: rgba(26, 22, 37, 0.6); backdrop-filter: blur(5px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        body.bg-mode-active #input-area { background: rgba(26, 22, 37, 0.6); }
-        body.bg-mode-active .message { backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -299,7 +298,7 @@
     </div>
 
     <div id="room-pass-screen" style="display: none;">
-        <i class="fas fa-lock" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+        <i class="fas fa-lock" style="font-size: 50px; color: var(--accent); margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--accent));"></i>
         <h3 style="margin-bottom: 20px; color: var(--text-primary); font-weight: 300;">Oda Güvenlik Şifresi</h3>
         <input type="password" id="room-pass" class="login-input" style="width: 250px;" placeholder="Oda Şifresi">
         <button class="primary-btn" style="width: 250px; margin-top: 15px;" onclick="checkRoomPass()">Odaya Gir</button>
@@ -317,7 +316,6 @@
             </div>
             <div class="header-actions">
                 <button class="circle-btn" onclick="toggleUserList()" title="Kişiler"><i class="fas fa-users"></i></button>
-                <button id="bg-mode-btn" class="circle-btn" onclick="toggleBackgroundMode()" title="Arka Plan Modu"><i class="fas fa-expand"></i></button>
                 <button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()" title="Mikrofon"><i class="fas fa-microphone-slash"></i></button>
                 <button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()" title="Kamera"><i class="fas fa-video"></i></button>
                 <button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()" title="Ekran Paylaş"><i class="fas fa-desktop"></i></button>
@@ -325,8 +323,8 @@
         </header>
 
         <div id="user-list-popup">
-            <h4 style="margin:0; padding:15px; background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1); font-size:14px;">Kişi Listesi</h4>
-            <ul id="user-list-content" style="list-style:none; padding:0; margin:0; max-height:250px; overflow-y:auto;"></ul>
+            <h4>Kişi Listesi</h4>
+            <ul id="user-list-content"></ul>
         </div>
 
         <div id="video-container">
@@ -423,37 +421,11 @@
 
         function checkVideoVisibility() {
             const container = document.getElementById('video-container');
-            // Bg modundaysak container her zaman görünür kalsın
-            if (document.body.classList.contains('bg-mode-active')) {
-                container.classList.add('visible');
-            } else {
-                if (videoGrid.childElementCount > 0) container.classList.add('visible');
-                else container.classList.remove('visible');
-            }
+            if (videoGrid.childElementCount > 0) container.classList.add('visible');
+            else container.classList.remove('visible');
         }
         function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
         
-        // --- ARKA PLAN MODU TOGGLE FONKSİYONU ---
-        function toggleBackgroundMode() {
-            const body = document.body;
-            const btnIcon = document.querySelector('#bg-mode-btn i');
-            const bgBtn = document.getElementById('bg-mode-btn');
-
-            body.classList.toggle('bg-mode-active');
-
-            if (body.classList.contains('bg-mode-active')) {
-                btnIcon.classList.remove('fa-expand');
-                btnIcon.classList.add('fa-compress');
-                bgBtn.classList.add('active');
-            } else {
-                btnIcon.classList.remove('fa-compress');
-                btnIcon.classList.add('fa-expand');
-                bgBtn.classList.remove('active');
-                scrollToBottom();
-            }
-            checkVideoVisibility();
-        }
-
         socket.on('update-user-list', (users) => {
             const list = document.getElementById('user-list-content'); list.innerHTML = "";
             users.forEach(u => {
@@ -461,19 +433,28 @@
                 li.className = u.online ? 'online' : 'offline';
                 let iconsHtml = '';
                 if (u.online) {
-                    if (u.cam) iconsHtml += `<i class="fas fa-video" style="color:var(--accent);margin-left:auto;"></i>`;
-                    if (u.screen) iconsHtml += `<i class="fas fa-desktop" style="color:#3498db;margin-left:5px;"></i>`;
+                    if (u.cam) iconsHtml += `<i class="fas fa-video media-icon" style="color:var(--accent)"></i>`;
+                    if (u.screen) iconsHtml += `<i class="fas fa-desktop media-icon" style="color:#3498db"></i>`;
                 }
-                li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> ${iconsHtml}`;
+                li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> <div class="media-icons">${iconsHtml}</div>`;
                 if(u.online && (u.cam || u.screen)) { li.onclick = () => window.focusUserVideo(u.peerId); }
                 list.appendChild(li);
             });
         });
 
         window.focusUserVideo = function(pid) {
-            if (pid === myPeerId && currentActiveStream) { openFullscreen(currentActiveStream); return; }
-            if (userStreams[pid]) { openFullscreen(userStreams[pid]); return; }
-            if (videoElements[pid]) { openFullscreen(videoElements[pid].srcObject); return; }
+            if (pid === myPeerId && currentActiveStream) {
+                openFullscreen(currentActiveStream);
+                return;
+            }
+            if (userStreams[pid]) {
+                openFullscreen(userStreams[pid]);
+                return;
+            }
+            if (videoElements[pid]) {
+                openFullscreen(videoElements[pid].srcObject);
+                return;
+            }
             alert("Bağlantı bekleniyor veya kullanıcı yayında değil.");
         };
 
@@ -500,14 +481,18 @@
                     call.answer(currentActiveStream);
                     const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
                     activeCalls[call.peer] = call;
+                    
                     call.on('stream', s => {
-                        userStreams[call.peer] = s; video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                        userStreams[call.peer] = s; 
+                        video.srcObject = s; 
+                        video.ondblclick = () => openFullscreen(s);
                         addVideoStream(video, call.peer);
                     });
                 });
                 socket.on('user-connected', (uid) => connectToNewUser(uid));
             }).catch(e => {
-                document.getElementById('cam-toggle-btn').disabled = true; document.getElementById('mic-toggle-btn').disabled = true;
+                document.getElementById('cam-toggle-btn').disabled = true;
+                document.getElementById('mic-toggle-btn').disabled = true;
             });
         }
 
@@ -516,15 +501,22 @@
             const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
             activeCalls[uid] = call;
             call.on('stream', s => {
-                userStreams[uid] = s; video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                userStreams[uid] = s; 
+                video.srcObject = s; 
+                video.ondblclick = () => openFullscreen(s);
                 addVideoStream(video, uid);
             });
-            call.on('close', () => { video.remove(); delete userStreams[uid]; checkVideoVisibility(); });
+            call.on('close', () => { 
+                video.remove(); 
+                delete userStreams[uid]; 
+                checkVideoVisibility(); 
+            });
         }
 
         function toggleMic() {
             if(!cameraStream) return alert("Mikrofon yok!");
-            const a = cameraStream.getAudioTracks()[0]; const btn = document.getElementById('mic-toggle-btn');
+            const a = cameraStream.getAudioTracks()[0];
+            const btn = document.getElementById('mic-toggle-btn');
             a.enabled = !a.enabled;
             if(a.enabled) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-microphone"></i>'; }
             else { btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-microphone-slash"></i>'; }
@@ -555,12 +547,15 @@
             if(screenStream) { stopScreenShare(); return; }
             try {
                 screenStream = await navigator.mediaDevices.getDisplayMedia({video:true, audio:false});
-                const mic = cameraStream.getAudioTracks()[0]; if(mic && mic.enabled) screenStream.addTrack(mic);
+                const mic = cameraStream.getAudioTracks()[0];
+                if(mic && mic.enabled) { screenStream.addTrack(mic); }
                 document.getElementById('screen-share-btn').classList.add('screen-active');
                 currentActiveStream = screenStream; myVideo.srcObject = screenStream; myVideo.className = 'screen-mode';
                 userStreams[myPeerId] = screenStream;
+                
                 if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
-                checkVideoVisibility(); notifyMediaStatus(false,true); socket.emit('stream-changed', 'screen');
+                checkVideoVisibility();
+                notifyMediaStatus(false,true); socket.emit('stream-changed', 'screen');
                 replaceTracksForEveryone(screenStream);
                 screenStream.getVideoTracks()[0].onended = () => stopScreenShare();
             } catch(e){}
@@ -585,7 +580,8 @@
             const v = str.getVideoTracks()[0]; const a = str.getAudioTracks()[0];
             for(let p in activeCalls) {
                 const s = activeCalls[p].peerConnection.getSenders();
-                const vs = s.find(k=>k.track&&k.track.kind==='video'); const as = s.find(k=>k.track&&k.track.kind==='audio');
+                const vs = s.find(k=>k.track&&k.track.kind==='video');
+                const as = s.find(k=>k.track&&k.track.kind==='audio');
                 if(vs&&v) vs.replaceTrack(v); if(as&&a) as.replaceTrack(a); 
             }
         }
@@ -597,13 +593,16 @@
         }
 
         function openFullscreen(stream) {
-            const v = document.getElementById('fullscreen-video'); v.srcObject = stream;
+            const v = document.getElementById('fullscreen-video'); 
+            v.srcObject = stream;
             document.getElementById('fullscreen-layer').style.display = 'flex';
             document.body.classList.add('cinema-mode');
-            v.muted = false; v.play().catch(e => console.log("Oynatma hatası:", e));
+            v.muted = false; 
+            v.play().catch(e => console.log("Oynatma hatası:", e));
         }
         function closeFullscreen() {
-            const v = document.getElementById('fullscreen-video'); v.muted = true;
+            const v = document.getElementById('fullscreen-video');
+            v.muted = true;
             document.getElementById('fullscreen-layer').style.display = 'none';
             document.body.classList.remove('cinema-mode');
             const wrapper = document.getElementById('chat-wrapper');
@@ -637,7 +636,10 @@
             div.className = `message ${isMine ? 'mine' : 'theirs'}`;
             
             if (data.type === 'system-link') {
-                div.innerHTML = `<span class="sender-name">${data.user}</span><div style="color:var(--text-secondary); font-style:italic;">${data.text}</div><div class="system-link-btn" onclick="window.focusUserVideo('${data.peerId}')">İZLE</div><div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
+                div.innerHTML = `<span class="sender-name">${data.user}</span>
+                                <div style="color:var(--text-secondary); font-style:italic;">${data.text}</div>
+                                <div class="system-link-btn" onclick="window.focusUserVideo('${data.peerId}')">İZLE</div>
+                                <div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
             } else {
                 let content = data.type === 'text' ? `<div>${data.content}</div>` : 
                               data.type === 'image' ? `<img src="${data.content}">` : 
