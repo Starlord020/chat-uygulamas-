@@ -1,4 +1,125 @@
-// --- YOUTUBE API KURULUMU ---
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+<title>Mevlüt & Ayşegül</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="image_0.png" type="image/png">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050406;--head:rgba(20,10,30,0.85);--chat:#0b0712;--in:#1a1623;--ac:#9b59b6;--ac-g:rgba(155,89,182,0.5);--ac-grad:linear-gradient(135deg,#8e44ad,#6c5ce7);--me:linear-gradient(135deg,#6D214F,#2c3e50);--you:#1f1b26;--txt:#ecf0f1;--sec:#95a5a6;--d:#e74c3c;--s:#2ecc71;--yt:#ff0000;--h:100dvh}*{box-sizing:border-box}body{margin:0;font-family:'Outfit',sans-serif;background-color:var(--bg);color:var(--txt);height:var(--h);display:flex;flex-direction:column;overflow:hidden}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#4a3b55;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:var(--ac)}.hidden{display:none!important}#auth-screen,#room-pass-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,#2e1a38 0%,#050406 100%);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center}.auth-container{width:90%;max-width:380px;text-align:center;background:rgba(255,255,255,0.03);backdrop-filter:blur(15px);padding:35px;border-radius:25px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:f 0.5s ease-out}@keyframes f{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.auth-tabs{display:flex;justify-content:center;margin-bottom:25px;gap:15px}.auth-tab{padding:8px 16px;cursor:pointer;color:var(--sec);font-weight:600;transition:0.3s;border-radius:20px;font-size:14px}.auth-tab:hover{background:rgba(255,255,255,0.05)}.auth-tab.active{background:var(--ac);color:white;box-shadow:0 4px 15px var(--ac-g)}.auth-form{display:none;flex-direction:column;gap:15px}.auth-form.active{display:flex}.login-input{padding:15px;border-radius:15px;border:1px solid rgba(255,255,255,0.1);text-align:center;font-size:16px;background:rgba(0,0,0,0.2);color:white;outline:none;transition:0.3s}.login-input:focus{border-color:var(--ac);background:rgba(0,0,0,0.4);box-shadow:0 0 15px rgba(142,68,173,0.2)}button.primary-btn{padding:15px;border-radius:15px;border:none;background:var(--ac-grad);font-weight:600;cursor:pointer;font-size:15px;color:white;transition:0.3s;box-shadow:0 5px 20px rgba(0,0,0,0.3)}button.primary-btn:active{transform:scale(0.98)}.status-msg{margin-top:15px;font-size:14px;min-height:20px;font-weight:500}.error{color:#ff6b6b}.success{color:#1dd1a1}#app-header{background:var(--head);backdrop-filter:blur(10px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;border-bottom:1px solid rgba(255,255,255,0.05)}.header-info{display:flex;align-items:center;gap:14px}.header-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--ac);box-shadow:0 0 15px var(--ac-g)}.header-text h3{margin:0;font-size:18px}.header-text span{font-size:12px;color:var(--s);display:flex;align-items:center;gap:5px}.header-actions{display:flex;gap:8px}.circle-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,0.05);color:#ccc;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.3s}.circle-btn:hover{background:rgba(255,255,255,0.15);color:white;transform:translateY(-2px)}.circle-btn.active{background:var(--ac);color:white;box-shadow:0 0 15px var(--ac-g)}.circle-btn.screen-active{background:#0984e3;color:white;box-shadow:0 0 15px rgba(9,132,227,0.6)}
+/* YOUTUBE STİLİ */
+#yt-btn { color: var(--yt); } #yt-btn:hover { background: rgba(255,0,0,0.15); }
+#youtube-wrapper {
+    position: relative; width: 100%; background: #000; display: none; flex-direction: column;
+    border-bottom: 2px solid var(--ac); transition: all 0.3s;
+}
+#youtube-wrapper.show { display: flex; }
+#yt-controls { padding: 10px; display: flex; gap: 10px; background: var(--head); align-items: center; }
+#yt-url-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; }
+#player-frame { width: 100%; aspect-ratio: 16/9; border: none; }
+#close-yt { color: var(--d); font-size: 18px; cursor: pointer; padding: 5px; }
+
+#video-container{background:#000;overflow:hidden;height:180px;transition:height 0.4s;flex-shrink:0;position:relative;border-bottom:1px solid rgba(255,255,255,0.1)}#video-container.collapsed{height:0;border:none}#video-grid{display:flex;overflow-x:auto;gap:12px;height:100%;padding:15px;align-items:center}video{height:100%;border-radius:12px;border:2px solid #333;min-width:150px;background:#151515;cursor:pointer;transition:0.3s;box-shadow:0 5px 15px rgba(0,0,0,0.5);touch-action:manipulation}video:hover{border-color:var(--ac);transform:scale(1.03)}video.screen-mode{object-fit:contain;border-color:#0984e3}#main-container{display:none;flex:1;height:100%;flex-direction:column;position:relative}#chat-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}#chat-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;background:var(--chat)} .message{max-width:80%;padding:12px 16px;border-radius:18px;font-size:15px;margin-bottom:2px;position:relative;word-wrap:break-word;box-shadow:0 2px 8px rgba(0,0,0,0.2);animation:f 0.2s}.message.mine{align-self:flex-end;background:var(--me);color:white;border-bottom-right-radius:4px}.message.theirs{align-self:flex-start;background:var(--you);border-bottom-left-radius:4px;color:#dcdde1}.message.big-emoji{font-size:40px;background:transparent!important;padding:0;box-shadow:none}.message.system-status{align-self:center;background:transparent;color:var(--sec);font-size:12px;font-style:italic;box-shadow:none;padding:5px;border:1px solid rgba(255,255,255,0.1);max-width:95%}.sender-name{font-size:11px;opacity:0.5;font-weight:600;display:block;margin-bottom:4px}.message img{max-width:100%;border-radius:12px;margin-top:5px;cursor:pointer}.system-link-btn{display:inline-block;margin-top:8px;background:rgba(116,185,255,0.1);padding:8px 12px;border-radius:8px;color:#74b9ff;font-weight:bold;cursor:pointer;border:1px solid rgba(116,185,255,0.3);font-size:12px}.system-link-btn:hover{background:rgba(116,185,255,0.2)}
+/* --- INPUT AREA DÜZENİ --- */
+#input-area{background:var(--head);backdrop-filter:blur(10px);padding:15px;display:flex;align-items:center;gap:8px;width:100%;border-top:1px solid rgba(255,255,255,0.05)}
+#input-area input{flex:1;padding:14px 20px;border-radius:30px;border:1px solid rgba(255,255,255,0.05);background:var(--in);color:white;outline:none;font-size:15px;transition:0.3s;min-width: 0;}
+#input-area input:focus{border-color:var(--ac);background:rgba(0,0,0,0.4)}
+.icon-btn{background:none;border:none;color:var(--sec);font-size:20px;padding:0;cursor:pointer;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;transition:0.2s;flex-shrink:0;}
+.icon-btn:hover{color:var(--ac);background:rgba(255,255,255,0.05)}
+#voice-msg-btn{width:48px;height:48px;background:var(--ac);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 15px rgba(142,68,173,0.4);border:none;cursor:pointer;flex-shrink:0;}
+#voice-msg-btn.recording{background:var(--d);animation:p 1s infinite}
+/* Başlangıçta Ses Gönder görünsün, Mesaj Gönder gizlensin */
+#send-btn { display: none; }
+#emoji-picker{position:absolute;bottom:80px;left:20px;width:280px;background:rgba(30,25,40,0.95);backdrop-filter:blur(15px);border-radius:15px;padding:10px;display:none;grid-template-columns:repeat(7,1fr);gap:5px;box-shadow:0 5px 20px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);z-index:200}#emoji-picker.show{display:grid}.emoji-item{cursor:pointer;font-size:22px;text-align:center;padding:5px;border-radius:5px;transition:0.2s}.emoji-item:hover{background:rgba(255,255,255,0.1);transform:scale(1.2)}#user-list-popup{position:absolute;top:75px;right:15px;width:260px;background:rgba(20,15,25,0.95);backdrop-filter:blur(15px);border-radius:18px;padding:0;display:none;flex-direction:column;z-index:2000;box-shadow:0 15px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1)}#user-list-popup h4{margin:0;padding:18px;background:rgba(255,255,255,0.03);font-size:14px;border-bottom:1px solid rgba(255,255,255,0.05)}#user-list-content{list-style:none;padding:5px 0;margin:0;max-height:250px;overflow-y:auto}#user-list-content li{padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.02);font-size:14px;display:flex;align-items:center;gap:12px;cursor:pointer}#user-list-content li:hover{background:rgba(255,255,255,0.05)}.status-dot{width:8px;height:8px;border-radius:50%;background:#555}.online .status-dot{background:var(--s);box-shadow:0 0 8px var(--s)}.media-icons{margin-left:auto;display:flex;gap:8px;opacity:0.8}#fullscreen-layer{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:5000;display:none;justify-content:center;align-items:center}#fullscreen-video{width:100%;height:100%;object-fit:contain}
+/* Tam ekran videoda efekti kaldır */
+#fullscreen-video:hover { transform: none !important; border-color: transparent !important; box-shadow: none !important; }
+#close-fs-btn{position:absolute;top:30px;left:30px;background:rgba(0,0,0,0.5);color:white;border:1px solid rgba(255,255,255,0.2);padding:12px 24px;border-radius:30px;cursor:pointer;z-index:5002;backdrop-filter:blur(5px);transition:0.3s}#close-fs-btn:hover{background:rgba(255,255,255,0.1)}
+/* Image Modal */
+#image-modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:6000;display:none;justify-content:center;align-items:center;}
+#image-modal img {max-width:95%;max-height:95%;border-radius:5px;box-shadow:0 0 20px rgba(0,0,0,0.5);}
+#close-img-btn{position:absolute;top:20px;right:20px;color:white;font-size:30px;cursor:pointer;background:none;border:none;}
+#minimize-icon{display:none;width:100%;height:100%;justify-content:center;align-items:center;font-size:24px}#floating-header{display:none;justify-content:space-between;align-items:center;padding:12px 20px;background:rgba(30,25,40,0.9);border-top-left-radius:15px;border-top-right-radius:15px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1)}#notification-badge{position:absolute;top:-5px;right:-5px;background:var(--d);font-size:12px;font-weight:bold;width:24px;height:24px;border-radius:50%;display:none;justify-content:center;align-items:center;border:2px solid var(--bg);animation:b 0.5s}body.cinema-mode #chat-wrapper{position:fixed;right:20px;bottom:20px;width:340px;height:500px;background:rgba(15,12,19,0.85);backdrop-filter:blur(15px);border-radius:15px;z-index:5001;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.6)}body.cinema-mode #floating-header{display:flex}body.cinema-mode #chat-wrapper.minimized{width:60px;height:60px;border-radius:50%;background:var(--ac-grad);right:20px;bottom:30px;cursor:pointer;box-shadow:0 5px 20px rgba(142,68,173,0.5);overflow:visible}body.cinema-mode #chat-wrapper.minimized #chat-area,body.cinema-mode #chat-wrapper.minimized #input-area,body.cinema-mode #chat-wrapper.minimized #floating-header{display:none}body.cinema-mode #chat-wrapper.minimized #minimize-icon{display:flex}
+/* CHECKBOX ve ÇIKIŞ BUTONU STİLİ */
+.remember-container {display:flex; align-items:center; gap:8px; margin-bottom:15px; font-size:14px; color:var(--sec); justify-content:center;}
+.remember-container input {width:16px; height:16px; cursor:pointer;}
+#logout-btn {background:rgba(231,76,60,0.2); color:var(--d);}
+#logout-btn:hover {background:var(--d); color:white;}
+@media (max-width:600px){
+    body.cinema-mode #chat-wrapper{width:90%;right:5%;bottom:30px;height:50%}
+    body.cinema-mode #chat-wrapper.minimized{right:20px;bottom:80px;width:50px;height:50px}
+    .auth-container{width:85%}
+    /* Butonları küçült ve sıkıştır */
+    #input-area{padding:10px 5px; gap: 4px;}
+    .icon-btn {width: 34px; height: 34px; font-size: 18px;}
+    #voice-msg-btn {width: 40px; height: 40px; font-size: 18px;}
+    #input-area input {padding: 10px 15px; font-size: 14px;}
+    #emoji-picker {width: 90%; left: 5%; bottom: 70px;}
+}
+@keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}@keyframes p{0%{box-shadow:0 0 0 0 rgba(231,76,60,0.7)}70%{transform:scale(1.1);box-shadow:0 0 0 10px rgba(231,76,60,0)}100%{box-shadow:0 0 0 0 rgba(231,76,60,0)}}
+</style>
+</head>
+<body>
+<div id="image-modal"><button id="close-img-btn" onclick="closeImageModal()"><i class="fas fa-times"></i></button><img id="modal-img" src=""></div>
+<div id="fullscreen-layer"><button id="close-fs-btn" onclick="closeFullscreen()"><i class="fas fa-times"></i> Kapat</button><video id="fullscreen-video" autoplay playsinline></video></div>
+<div id="auth-screen">
+<img src="image_0.png" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:30px;border:4px solid var(--ac);box-shadow:0 0 30px var(--ac-g);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
+<div class="auth-container">
+<div class="auth-tabs"><div class="auth-tab active" onclick="switchTab('login')">Giriş Yap</div><div class="auth-tab" onclick="switchTab('register')">Kayıt Ol</div></div>
+<div id="login-form" class="auth-form active">
+    <input type="text" id="login-nick" class="login-input" placeholder="Kullanıcı Adı">
+    <input type="password" id="login-pass" class="login-input" placeholder="Şifreniz">
+    <div class="remember-container">
+        <input type="checkbox" id="remember-me"> <label for="remember-me">Beni Hatırla</label>
+    </div>
+    <button class="primary-btn" onclick="doLogin()">Giriş Yap</button>
+</div>
+<div id="register-form" class="auth-form"><input type="text" id="reg-nick" class="login-input" placeholder="Kullanıcı Adı Belirle"><input type="password" id="reg-pass" class="login-input" placeholder="Şifre Belirle"><button class="primary-btn" onclick="doRegister()">Kayıt Ol</button></div>
+<div id="auth-msg" class="status-msg"></div></div></div>
+<div id="room-pass-screen" style="display:none;">
+<i class="fas fa-lock" style="font-size:60px;color:var(--ac);margin-bottom:25px;filter:drop-shadow(0 0 20px var(--ac-g));"></i>
+<h3 style="margin-bottom:20px;font-weight:300;letter-spacing:1px;">Oda Güvenlik Şifresi</h3>
+<input type="password" id="room-pass" class="login-input" style="width:280px;" placeholder="Oda Şifresi"><button class="primary-btn" style="width:280px;margin-top:20px;" onclick="checkRoomPass()">Odaya Gir</button><div id="room-error" class="status-msg error"></div></div>
+<div id="main-container">
+<header id="app-header">
+<div class="header-info"><img src="image_0.png" class="header-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'"><div class="header-text"><h3>Mevlüt & Ayşegül</h3><span id="connection-status">Bağlandı</span></div></div>
+<div class="header-actions">
+<button id="yt-btn" class="circle-btn" onclick="toggleYoutube()"><i class="fab fa-youtube"></i></button>
+<button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()"><i class="fas fa-eye-slash"></i></button>
+<button class="circle-btn" onclick="toggleUserList()"><i class="fas fa-users"></i></button>
+<button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()"><i class="fas fa-microphone-slash"></i></button>
+<button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()"><i class="fas fa-video"></i></button>
+<button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()"><i class="fas fa-desktop"></i></button>
+<button id="logout-btn" class="circle-btn" onclick="doLogout()" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></button>
+</div></header>
+<div id="user-list-popup"><h4><i class="fas fa-circle" style="font-size:10px;color:var(--s);margin-right:8px;"></i> Aktif Kişiler</h4><ul id="user-list-content"></ul></div>
+<div id="youtube-wrapper">
+    <div id="yt-controls">
+        <input type="text" id="yt-url-input" placeholder="YouTube Linki Yapıştır">
+        <button class="primary-btn" style="padding: 8px 15px; font-size:12px;" onclick="loadYoutubeVideo()">YÜKLE</button>
+        <i class="fas fa-times" id="close-yt" onclick="toggleYoutube()"></i>
+    </div>
+    <div id="player"></div>
+</div>
+<div id="video-container"><div id="video-grid"></div></div>
+<div id="chat-wrapper" onclick="handleWrapperClick()">
+<div id="notification-badge">0</div><div id="minimize-icon"><i class="fas fa-comment-dots"></i></div>
+<div id="floating-header"><span>Sohbet</span><i class="fas fa-chevron-down" id="minimize-btn" onclick="minimizeChat(event)"></i></div>
+<div id="chat-area"></div>
+<div id="input-area">
+<input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
+<button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-plus"></i></button>
+<button class="icon-btn" onclick="toggleEmoji()"><i class="far fa-smile"></i></button>
+<input type="text" id="msg-input" placeholder="Mesaj yaz..." autocomplete="off" oninput="toggleInputButtons()">
+<button id="send-btn" class="icon-btn" onclick="sendMessage()"><i class="fas fa-paper-plane" style="color:var(--ac)"></i></button>
+<button id="voice-msg-btn" onclick=""><i class="fas fa-microphone"></i></button>
+<div id="emoji-picker"></div>
+</div></div></div>
+<script src="/socket.io/socket.io.js"></script><script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+<script>
+// YOUTUBE IFrame API Yükle
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -26,12 +147,9 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerError(event) {
     console.error("YouTube Player Hatası:", event.data);
-    // Hata kodlarına göre kullanıcıya bilgi verilebilir ama şimdilik konsola yazdırdık.
 }
 
 function onPlayerStateChange(event) {
-    // Sadece videoyu başlatan kişi komut göndersin diye kontrol eklenebilir
-    // Ama şimdilik herkesin durumu senkronize olsun:
     if (event.data == YT.PlayerState.PLAYING) {
         socket.emit('yt-sync', { action: 'play', time: player.getCurrentTime() });
     } else if (event.data == YT.PlayerState.PAUSED) {
@@ -121,7 +239,10 @@ function connectToNewUser(uid){const c=myPeer.call(uid,currentActiveStream);cons
 
 function toggleMic(){if(!cameraStream)return alert("Önce Kamera/Mikrofon izni verin");const a=cameraStream.getAudioTracks()[0];const b=document.getElementById('mic-toggle-btn');a.enabled=!a.enabled;if(a.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-microphone"></i>'}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-microphone-slash"></i>'}}
 
-function toggleCamera(){if(!cameraStream){navigator.mediaDevices.getUserMedia({video:true,audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(s=>{cameraStream=s;currentActiveStream=s;myVideo.srcObject=s;userStreams[myPeerId]=s;const micBtn = document.getElementById('mic-toggle-btn'); if(!micBtn.classList.contains('active')) { s.getAudioTracks()[0].enabled = false; } const b=document.getElementById('cam-toggle-btn');b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(true,false);socket.emit('stream-changed','camera');socket.emit('message','::SYS::'+myPeerId+'::Kamera açtı');refreshConnections()}).catch(e=>{if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){alert("Lütfen adres çubuğundaki kilit ikonuna tıklayıp Kamera ve Mikrofon izni verin.")}else{alert("Kamera hatası: "+e)}});return}if(screenStream)stopScreenShare();const v=cameraStream.getVideoTracks()[0];v.enabled=!v.enabled;if(v.enabled){currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);socket.emit('message','::SYS::'+myPeerId+'::Kamera açtı')}else{currentActiveStream=getEmptyStream();if(videoGrid.contains(myVideo))myVideo.remove()}const b=document.getElementById('cam-toggle-btn');if(v.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';notifyMediaStatus(true,false);socket.emit('stream-changed','camera')}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-video"></i>';notifyMediaStatus(false,false)}refreshConnections()}
+function toggleCamera(){if(!cameraStream){navigator.mediaDevices.getUserMedia({video:true,audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(s=>{
+    cameraStream=s; currentActiveStream=s; myVideo.srcObject=s; userStreams[myPeerId]=s;
+    const micBtn = document.getElementById('mic-toggle-btn'); if(!micBtn.classList.contains('active')) { s.getAudioTracks()[0].enabled = false; }
+    const b=document.getElementById('cam-toggle-btn');b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(true,false);socket.emit('stream-changed','camera');socket.emit('message','::SYS::'+myPeerId+'::Kamera açtı');refreshConnections()}).catch(e=>{if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){alert("Lütfen adres çubuğundaki kilit ikonuna tıklayıp Kamera ve Mikrofon izni verin.")}else{alert("Kamera hatası: "+e)}});return}if(screenStream)stopScreenShare();const v=cameraStream.getVideoTracks()[0];v.enabled=!v.enabled;if(v.enabled){currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);socket.emit('message','::SYS::'+myPeerId+'::Kamera açtı')}else{currentActiveStream=getEmptyStream();if(videoGrid.contains(myVideo))myVideo.remove()}const b=document.getElementById('cam-toggle-btn');if(v.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';notifyMediaStatus(true,false);socket.emit('stream-changed','camera')}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-video"></i>';notifyMediaStatus(false,false)}refreshConnections()}
 
 async function toggleScreenShare(){if(isMobile())return;if(screenStream){stopScreenShare();return}try{screenStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});const m=cameraStream?cameraStream.getAudioTracks()[0]:null;if(m&&m.enabled)screenStream.addTrack(m);document.getElementById('screen-share-btn').classList.add('screen-active');currentActiveStream=screenStream;myVideo.srcObject=screenStream;myVideo.className='screen-mode';userStreams[myPeerId]=screenStream;if(!videoGrid.contains(myVideo))videoGrid.append(myVideo);notifyMediaStatus(false,true);socket.emit('stream-changed','screen');socket.emit('message','::SYS::'+myPeerId+'::Ekran paylaştı');refreshConnections();screenStream.getVideoTracks()[0].onended=()=>stopScreenShare()}catch(e){}}
 
@@ -130,6 +251,8 @@ function stopScreenShare(){if(!screenStream)return;screenStream.getVideoTracks()
 function handleIncomingStream(stream,pid){let v=videoElements[pid];if(!v){v=document.createElement('video');v.setAttribute('playsinline','');v.autoplay=true;videoElements[pid]=v;v.addEventListener('loadedmetadata',()=>v.play().catch(e=>console.log(e)));v.ondblclick=()=>openFullscreen(stream)}v.srcObject=stream;const status=userStatusMap[pid];if(status&&(status.cam||status.screen)){if(!videoGrid.contains(v))videoGrid.append(v);const c=document.getElementById('video-container');if(c.classList.contains('collapsed'))toggleVideoContainer()}else{if(videoGrid.contains(v))v.remove()}}
 
 function addVideoStream(v,pid){if(pid===myPeerId){v.muted=true;v.volume=0}if(pid&&videoElements[pid]&&videoElements[pid]!==v)videoElements[pid].remove();v.addEventListener('loadedmetadata',()=>v.play());if(pid)videoElements[pid]=v;const status=userStatusMap[pid];if(pid===myPeerId||(status&&(status.cam||status.screen))){if(!videoGrid.contains(v))videoGrid.append(v);const c=document.getElementById('video-container');if(c.classList.contains('collapsed')){toggleVideoContainer()}}v.play().catch(()=>{v.muted=true;v.play()})}
+
+function replaceTracksForEveryone(str){const v=str.getVideoTracks()[0];const a=str.getAudioTracks()[0];for(let p in activeCalls){const s=activeCalls[p].peerConnection.getSenders();const vs=s.find(k=>k.track&&k.track.kind==='video');const as=s.find(k=>k.track&&k.track.kind==='audio');if(vs&&v)vs.replaceTrack(v);if(as&&a)as.replaceTrack(a)}}
 
 function openFullscreen(s){const v=document.getElementById('fullscreen-video');v.srcObject=s;document.getElementById('fullscreen-layer').style.display='flex';document.body.classList.add('cinema-mode');v.muted=false;v.play().catch(e=>{})}
 function closeFullscreen(){const v=document.getElementById('fullscreen-video');v.muted=true;document.getElementById('fullscreen-layer').style.display='none';document.body.classList.remove('cinema-mode');document.getElementById('chat-wrapper').classList.remove('minimized');document.getElementById('notification-badge').style.display='none'}
