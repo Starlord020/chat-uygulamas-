@@ -74,7 +74,11 @@ io.on('connection', (socket) => {
         socket.on('stream-changed', (type) => {
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
-
+        // --- YOUTUBE SENKRONİZASYONU ---
+        socket.on('yt-sync', (data) => {
+            // Gelen YouTube komutunu (oynat, durdur, yeni video, süre) odadaki diğer herkese gönder
+            socket.to(roomId).emit('yt-sync', data); 
+        });
         // MESAJ
         const handleMessage = (type, content) => {
             // Sistem mesajları (::SYS:: ile başlayanlar) geçmişe kaydedilmesin
@@ -121,3 +125,4 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => { console.log(`Sunucu ${PORT} portunda çalışıyor.`); });
+
