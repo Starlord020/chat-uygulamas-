@@ -8,6 +8,14 @@ const io = require('socket.io')(http, {
 });
 const { ExpressPeerServer } = require('peer');
 
+// --- ŞİFRE AYARI ---
+// Yedek şifre YOK. Sadece Render.com'daki ODA_SIFRESI geçerli.
+const ROOM_PASS = process.env.ODA_SIFRESI; 
+
+if (!ROOM_PASS) {
+    console.warn("UYARI: ODA_SIFRESI environment variable olarak ayarlanmamış! Giriş yapılamayabilir.");
+}
+
 app.use(express.static('public'));
 
 const peerServer = ExpressPeerServer(http, { debug: true, path: '/' });
@@ -21,10 +29,20 @@ function saveUsers() { fs.writeFileSync(USERS_FILE, JSON.stringify(usersDB, null
 
 let messageHistory = []; 
 const MAX_HISTORY = 50;
-let onlineSessions = {}; // socket.id -> { nickname, peerId, cam, screen }
+let onlineSessions = {}; 
 
 io.on('connection', (socket) => {
     
+    // 1. ODA ŞİFRESİ KONTROLÜ (GÜVENLİ YÖNTEM)
+    socket.on('check-room-pass', (inputPass) => {
+        // Sunucudaki gizli şifre ile karşılaştır
+        if (inputPass === ROOM_PASS) {
+            socket.emit('room-pass-success');
+        } else {
+            socket.emit('room-pass-error');
+        }
+    });
+
     // KAYIT & GİRİŞ
     socket.on('register', (u, p) => {
         if (usersDB[u]) socket.emit('auth-error', 'İsim alınmış.');
@@ -39,19 +57,12 @@ io.on('connection', (socket) => {
     // ODAYA GİRİŞ
     socket.on('join-room', (roomId, peerId, nickname) => {
         socket.join(roomId);
-        // Varsayılan olarak kapalı başlıyoruz
         onlineSessions[socket.id] = { nickname, peerId, cam: false, screen: false };
         
-        // 1. Listeyi herkese duyur
         broadcastUserList(roomId);
-        
-        // 2. Geçmiş mesajları yükle
         socket.emit('load-history', messageHistory);
-        
-        // 3. Diğerlerine "Yeni biri geldi" de
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // MEDYA DURUMU GÜNCELLEME
         socket.on('media-status', (status) => {
             if (onlineSessions[socket.id]) {
                 onlineSessions[socket.id].cam = status.cam;
@@ -60,13 +71,18 @@ io.on('connection', (socket) => {
             }
         });
 
-        // GÖRÜNTÜ TÜRÜ DEĞİŞİMİ
         socket.on('stream-changed', (type) => {
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
 
         // MESAJ
         const handleMessage = (type, content) => {
+            // Sistem mesajları (::SYS:: ile başlayanlar) geçmişe kaydedilmesin
+            if(type === 'text' && content.startsWith('::SYS::')) {
+                 io.to(roomId).emit('createMessage', { type, user: nickname, content, senderId: socket.id, time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) });
+                 return;
+            }
+
             const msgData = { type, user: nickname, content, senderId: socket.id, time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) };
             messageHistory.push(msgData);
             if(messageHistory.length > MAX_HISTORY) messageHistory.shift();
@@ -78,8 +94,8 @@ io.on('connection', (socket) => {
 
         // ÇIKIŞ
         socket.on('disconnect', () => {
-            delete onlineSessions[socket.id]; // Listeden sil
-            broadcastUserList(roomId); // Güncel listeyi yayınla
+            delete onlineSessions[socket.id]; 
+            broadcastUserList(roomId); 
             socket.to(roomId).emit('user-disconnected', peerId, nickname);
         });
     });
