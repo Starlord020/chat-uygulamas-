@@ -1,96 +1,669 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
-<title>Mevlüt & Ayşegül</title>
-<link rel="manifest" href="/manifest.json">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg-color:#050406;--header-bg:rgba(20,10,30,0.85);--chat-bg:#0b0712;--input-bg:#1a1623;--accent:#9b59b6;--accent-glow:rgba(155,89,182,0.5);--accent-gradient:linear-gradient(135deg,#8e44ad,#6c5ce7);--my-msg-bg:linear-gradient(135deg,#6D214F,#2c3e50);--my-msg-border:#8e44ad;--other-msg-bg:#1f1b26;--text-primary:#ecf0f1;--text-secondary:#95a5a6;--danger:#e74c3c;--success:#2ecc71;--app-height:100dvh}*{box-sizing:border-box}body{margin:0;font-family:'Outfit',sans-serif;background-color:var(--bg-color);color:var(--text-primary);height:var(--app-height);display:flex;flex-direction:column;overflow:hidden}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-color)}::-webkit-scrollbar-thumb{background:#4a3b55;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:var(--accent)}.hidden{display:none!important}#auth-screen,#room-pass-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,#2e1a38 0%,#050406 100%);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center}.auth-container{width:90%;max-width:380px;text-align:center;background:rgba(255,255,255,0.03);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);padding:35px;border-radius:25px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:fadeIn 0.5s ease-out}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.auth-tabs{display:flex;justify-content:center;margin-bottom:25px;gap:15px}.auth-tab{padding:8px 16px;cursor:pointer;color:var(--text-secondary);font-weight:600;transition:0.3s;border-radius:20px;font-size:14px}.auth-tab:hover{background:rgba(255,255,255,0.05)}.auth-tab.active{background:var(--accent);color:white;box-shadow:0 4px 15px var(--accent-glow)}.auth-form{display:none;flex-direction:column;gap:15px}.auth-form.active{display:flex}.login-input{padding:15px;border-radius:15px;border:1px solid rgba(255,255,255,0.1);text-align:center;font-size:16px;background:rgba(0,0,0,0.2);color:white;outline:none;transition:0.3s;font-family:inherit}.login-input:focus{border-color:var(--accent);background:rgba(0,0,0,0.4);box-shadow:0 0 15px rgba(142,68,173,0.2)}button.primary-btn{padding:15px;border-radius:15px;border:none;background:var(--accent-gradient);font-weight:600;cursor:pointer;font-size:15px;color:white;transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);box-shadow:0 5px 20px rgba(0,0,0,0.3);letter-spacing:0.5px}button.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px var(--accent-glow);filter:brightness(1.1)}button.primary-btn:active{transform:scale(0.98)}.status-msg{margin-top:15px;font-size:14px;min-height:20px;font-weight:500}.error{color:#ff6b6b;text-shadow:0 0 10px rgba(255,107,107,0.3)}.success{color:#1dd1a1;text-shadow:0 0 10px rgba(29,209,161,0.3)}#app-header{background-color:var(--header-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:100;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.05)}.header-info{display:flex;align-items:center;gap:14px}.header-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);box-shadow:0 0 15px var(--accent-glow)}.header-text h3{margin:0;font-size:18px;font-weight:600;color:var(--text-primary)}.header-text span{font-size:12px;color:var(--success);display:flex;align-items:center;gap:5px}.header-text span::before{content:'';width:6px;height:6px;background:var(--success);border-radius:50%;box-shadow:0 0 5px var(--success)}.header-actions{display:flex;gap:8px}.circle-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,0.05);color:#ccc;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}.circle-btn:hover{background:rgba(255,255,255,0.15);color:white;transform:translateY(-2px)}.circle-btn.active{background:var(--accent);color:white;box-shadow:0 0 15px var(--accent-glow)}.circle-btn.screen-active{background:#0984e3;color:white;box-shadow:0 0 15px rgba(9,132,227,0.6)}#video-container{background:#000;overflow:hidden;height:180px;transition:height 0.4s ease-in-out;flex-shrink:0;position:relative;box-shadow:inset 0 -20px 30px rgba(0,0,0,0.8);border-bottom:1px solid rgba(255,255,255,0.1)}#video-container.collapsed{height:0;border:none}#video-grid{display:flex;overflow-x:auto;gap:12px;height:100%;padding:15px;align-items:center;scrollbar-width:none}video{height:100%;border-radius:12px;border:2px solid #333;min-width:150px;background:#151515;cursor:pointer;transition:0.3s;box-shadow:0 5px 15px rgba(0,0,0,0.5)}video:hover{border-color:var(--accent);transform:scale(1.03)}video.camera-mode{object-fit:cover}video.screen-mode{object-fit:contain;border-color:#0984e3}#main-container{display:none;flex:1;height:100%;flex-direction:column;position:relative}#chat-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;transition:all 0.3s}#chat-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;background-color:var(--chat-bg);background-image:radial-gradient(rgba(255,255,255,0.03) 1px,transparent 1px);background-size:25px 25px}.message{max-width:80%;padding:12px 16px;border-radius:18px;font-size:15px;margin-bottom:2px;position:relative;word-wrap:break-word;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,0.2);animation:slideIn 0.2s ease-out}@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.message.mine{align-self:flex-end;background:var(--my-msg-bg);color:white;border-bottom-right-radius:4px;border:1px solid rgba(255,255,255,0.05)}.message.theirs{align-self:flex-start;background-color:var(--other-msg-bg);border-bottom-left-radius:4px;color:#dcdde1;border:1px solid rgba(255,255,255,0.05)}.sender-name{font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;display:block;margin-bottom:4px;letter-spacing:0.5px}.message img{max-width:100%;border-radius:12px;margin-top:5px;border:1px solid rgba(255,255,255,0.1)}.system-link-btn{display:inline-block;margin-top:8px;background:rgba(116,185,255,0.1);padding:8px 12px;border-radius:8px;color:#74b9ff;text-decoration:none;font-weight:bold;cursor:pointer;border:1px solid rgba(116,185,255,0.3);font-size:12px;transition:0.2s}.system-link-btn:hover{background:rgba(116,185,255,0.2)}#input-area{background:var(--header-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:15px;display:flex;align-items:center;gap:12px;width:100%;border-top:1px solid rgba(255,255,255,0.05)}#input-area input{flex:1;padding:14px 20px;border-radius:30px;border:1px solid rgba(255,255,255,0.05);background:var(--input-bg);color:white;outline:none;font-size:15px;transition:0.3s}#input-area input:focus{border-color:var(--accent);background:rgba(0,0,0,0.4);box-shadow:0 0 10px rgba(142,68,173,0.1)}.icon-btn{background:none;border:none;color:var(--text-secondary);font-size:20px;padding:10px;cursor:pointer;border-radius:50%;transition:0.2s;width:45px;height:45px;display:flex;align-items:center;justify-content:center}.icon-btn:hover{color:var(--accent);background:rgba(255,255,255,0.05);transform:rotate(10deg)}#voice-msg-btn{width:48px;height:48px;background:var(--accent);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 15px rgba(142,68,173,0.4);border:none;cursor:pointer;transition:0.2s}#voice-msg-btn:active{transform:scale(0.9)}#voice-msg-btn.recording{background:var(--danger);animation:pulse 1s infinite;box-shadow:0 0 15px var(--danger)}#user-list-popup{position:absolute;top:75px;right:15px;width:260px;background:rgba(20,15,25,0.95);backdrop-filter:blur(15px);border-radius:18px;padding:0;display:none;flex-direction:column;z-index:2000;box-shadow:0 15px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);animation:fadeIn 0.2s ease-out}#user-list-popup h4{margin:0;padding:18px;background:rgba(255,255,255,0.03);color:var(--text-primary);font-size:14px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;letter-spacing:0.5px}#user-list-content{list-style:none;padding:5px 0;margin:0;max-height:250px;overflow-y:auto}#user-list-content li{padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.02);font-size:14px;display:flex;align-items:center;gap:12px;color:var(--text-primary);cursor:pointer;transition:0.2s}#user-list-content li:hover{background:rgba(255,255,255,0.05);padding-left:25px}.status-dot{width:8px;height:8px;border-radius:50%;background:#555}.online .status-dot{background:var(--success);box-shadow:0 0 8px var(--success)}.media-icons{margin-left:auto;display:flex;gap:8px;opacity:0.8}#fullscreen-layer{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:5000;display:none;justify-content:center;align-items:center}#fullscreen-video{width:100%;height:100%;object-fit:contain}#close-fs-btn{position:absolute;top:30px;left:30px;background:rgba(0,0,0,0.5);color:white;border:1px solid rgba(255,255,255,0.2);padding:12px 24px;border-radius:30px;cursor:pointer;z-index:5002;backdrop-filter:blur(5px);transition:0.3s}#close-fs-btn:hover{background:rgba(255,255,255,0.1)}#minimize-icon{display:none;width:100%;height:100%;justify-content:center;align-items:center;color:white;font-size:24px}#floating-header{display:none;justify-content:space-between;align-items:center;padding:12px 20px;background:rgba(30,25,40,0.9);color:white;border-top-left-radius:15px;border-top-right-radius:15px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1)}#notification-badge{position:absolute;top:-5px;right:-5px;background-color:var(--danger);color:white;font-size:12px;font-weight:bold;width:24px;height:24px;border-radius:50%;display:none;justify-content:center;align-items:center;border:2px solid var(--bg-color);animation:bounce 0.5s}body.cinema-mode #chat-wrapper{position:fixed;right:20px;bottom:20px;width:340px;height:500px;background:rgba(15,12,19,0.85);backdrop-filter:blur(15px);border-radius:15px;z-index:5001;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.6)}body.cinema-mode #floating-header{display:flex}body.cinema-mode #chat-wrapper.minimized{width:60px;height:60px;border-radius:50%;background:var(--accent-gradient);right:20px;bottom:30px;cursor:pointer;box-shadow:0 5px 20px rgba(142,68,173,0.5);overflow:visible}body.cinema-mode #chat-wrapper.minimized #chat-area,body.cinema-mode #chat-wrapper.minimized #input-area,body.cinema-mode #chat-wrapper.minimized #floating-header{display:none}body.cinema-mode #chat-wrapper.minimized #minimize-icon{display:flex}@media (max-width:600px){body.cinema-mode #chat-wrapper{width:90%;right:5%;bottom:30px;height:50%}body.cinema-mode #chat-wrapper.minimized{right:20px;bottom:80px;width:50px;height:50px}.auth-container{width:85%;padding:25px}#input-area{padding:10px;gap:8px}}@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(231,76,60,0.7)}70%{transform:scale(1.1);box-shadow:0 0 0 10px rgba(231,76,60,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(231,76,60,0)}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>Mevlüt & Ayşegül</title>
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* --- TEMA RENKLERİ --- */
+            --bg-color: #0f0c13;
+            --header-bg: #1a1625;
+            --chat-bg: #130f1a;
+            --input-bg: #2b2636;
+            
+            --accent: #8e44ad;
+            --accent-hover: #9b59b6;
+            --gradient-btn: linear-gradient(135deg, #8e44ad, #c0392b);
+            
+            --my-msg: #6c5ce7;
+            --other-msg: #2d2838;
+            
+            --text-primary: #f5f6fa;
+            --text-secondary: #a4b0be;
+            --danger: #e74c3c;
+            --success: #00b894;
+            
+            --app-height: 100dvh; 
+        }
+
+        * { box-sizing: border-box; }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            height: var(--app-height); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            transition: background 0.3s;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- GİRİŞ EKRANLARI --- */
+        #auth-screen, #room-pass-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle at center, #2c243b 0%, #0f0c13 100%);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        
+        .auth-container { 
+            width: 90%; max-width: 380px; text-align: center; 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .auth-tabs { display: flex; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        .auth-tab { 
+            padding: 10px 20px; cursor: pointer; color: var(--text-secondary); font-weight: 600; transition: 0.3s;
+            position: relative; top: 2px;
+        }
+        .auth-tab.active { color: var(--accent-hover); border-bottom: 2px solid var(--accent); }
+        
+        .auth-form { display: none; flex-direction: column; gap: 15px; }
+        .auth-form.active { display: flex; }
+
+        .login-input { 
+            padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); 
+            text-align: center; font-size: 16px; background: rgba(0,0,0,0.3); color: white; outline: none; 
+            transition: 0.3s;
+        }
+        .login-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.5); }
+
+        /* --- BUTONLAR --- */
+        button.primary-btn { 
+            padding: 15px; border-radius: 12px; border: none; 
+            background: var(--gradient-btn);
+            font-weight: 600; cursor: pointer; font-size: 16px; color: white; 
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        button.primary-btn:active { transform: scale(0.98); }
+
+        .status-msg { margin-top: 15px; font-size: 14px; min-height: 20px; font-weight: 500; }
+        .error { color: #ff6b6b; } .success { color: #1dd1a1; }
+
+        /* --- HEADER --- */
+        #app-header { 
+            background-color: var(--header-bg); 
+            padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 100; flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .header-info { display: flex; align-items: center; gap: 12px; }
+        .header-avatar { 
+            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid var(--accent); box-shadow: 0 0 10px rgba(142, 68, 173, 0.3);
+        }
+        .header-text h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-primary); }
+        .header-text span { font-size: 12px; color: var(--accent-hover); font-weight: 500; }
+        
+        .header-actions { display: flex; gap: 8px; }
+        
+        .circle-btn { 
+            width: 40px; height: 40px; border-radius: 50%; border: none; 
+            background: rgba(255,255,255,0.08); color: var(--text-primary); 
+            font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            transition: all 0.2s;
+        }
+        .circle-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        .circle-btn.active { background: var(--accent); color: white; box-shadow: 0 0 15px rgba(142, 68, 173, 0.6); }
+        .circle-btn.screen-active { background: #0984e3; color: white; box-shadow: 0 0 15px rgba(9, 132, 227, 0.6); }
+
+        /* --- VİDEO ALANI --- */
+        #video-container { 
+            background: #000; overflow: hidden; height: 0; 
+            transition: height 0.4s ease-in-out; flex-shrink: 0; position: relative; 
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
+        }
+        #video-container.visible { height: 160px; border-bottom: 1px solid #333; }
+        #video-grid { display: flex; overflow-x: auto; gap: 10px; height: 100%; padding: 15px; align-items: center; scrollbar-width: none; }
+        
+        video { 
+            height: 100%; border-radius: 10px; border: 2px solid #333; min-width: 140px; background: #151515; cursor: pointer; transition: 0.3s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        video:hover { border-color: var(--accent); transform: scale(1.02); }
+        video.camera-mode { object-fit: cover; } video.screen-mode { object-fit: contain; border-color: #0984e3; }
+
+        /* --- SOHBET --- */
+        #main-container { display: none; flex: 1; height: 100%; flex-direction: column; position: relative; }
+        #chat-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: all 0.3s; }
+        
+        #chat-area { 
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; 
+            background-color: var(--chat-bg); 
+            background-image: radial-gradient(#2c243b 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .message { 
+            max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 15px; margin-bottom: 5px; 
+            position: relative; word-wrap: break-word; line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s;
+        }
+        .message.mine { 
+            align-self: flex-end; border-bottom-right-radius: 2px; 
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe); 
+        }
+        .message.theirs { 
+            align-self: flex-start; background-color: var(--other-msg); border-bottom-left-radius: 2px; 
+            color: #dcdde1;
+        }
+        .sender-name { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: bold; display: block; margin-bottom: 4px; }
+        .message img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+        
+        .system-link-btn { 
+            display: inline-block; margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px 12px; 
+            border-radius: 8px; color: #74b9ff; cursor: pointer; border: 1px solid rgba(116, 185, 255, 0.3); font-size: 13px;
+        }
+
+        /* --- INPUT ALANI --- */
+        #input-area { 
+            background: var(--header-bg); padding: 10px 15px; display: flex; align-items: center; gap: 10px; width: 100%; 
+            border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.3s;
+        }
+        #input-area input { 
+            flex: 1; padding: 12px 20px; border-radius: 25px; border: none; 
+            background: var(--input-bg); color: white; outline: none; font-size: 15px; 
+        }
+        
+        .icon-btn { 
+            background: none; border: none; color: var(--text-secondary); font-size: 20px; 
+            padding: 10px; cursor: pointer; border-radius: 50%; transition: 0.2s; 
+        }
+        .icon-btn:hover { color: var(--accent-hover); background: rgba(255,255,255,0.05); }
+        
+        #voice-msg-btn { 
+            width: 45px; height: 45px; background: var(--accent); border-radius: 50%; color: white; 
+            display: flex; align-items: center; justify-content: center; font-size: 20px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: none; cursor: pointer; transition: 0.2s;
+        }
+        #voice-msg-btn.recording { background: var(--danger); animation: pulse 1s infinite; }
+
+        /* --- POPUPLAR --- */
+        #user-list-popup { 
+            position: absolute; top: 70px; right: 15px; width: 240px; 
+            background: rgba(30, 25, 40, 0.95); backdrop-filter: blur(10px);
+            border-radius: 15px; padding: 0; display: none; flex-direction: column; z-index: 2000; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        }
+        #user-list-content li { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; display: flex; align-items: center; gap: 12px; color: var(--text-primary); cursor: pointer; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+        .online .status-dot { background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+        /* --- TAM EKRAN MODU --- */
+        #fullscreen-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; justify-content: center; align-items: center; }
+        #fullscreen-video { width: 100%; height: 100%; object-fit: contain; }
+        #close-fs-btn { 
+            position: absolute; top: 20px; left: 20px; 
+            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); 
+            padding: 10px 20px; border-radius: 30px; cursor: pointer; z-index: 5002; backdrop-filter: blur(5px);
+        }
+
+        /* --- YÜZEN SOHBET --- */
+        #minimize-icon { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; color: white; font-size: 24px; }
+        #floating-header { 
+            display: none; justify-content: space-between; align-items: center; padding: 12px 20px; 
+            background: rgba(30, 25, 40, 0.9); color: white; 
+            border-top-left-radius: 15px; border-top-right-radius: 15px; cursor: pointer; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        #notification-badge { position: absolute; top: -5px; right: -5px; background-color: var(--danger); color: white; font-size: 12px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid var(--bg-color); animation: bounce 0.5s; }
+
+        body.cinema-mode #chat-wrapper { 
+            position: fixed; right: 20px; bottom: 20px; width: 340px; height: 500px; 
+            background: rgba(15, 12, 19, 0.85); backdrop-filter: blur(15px); 
+            border-radius: 15px; z-index: 5001; 
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        body.cinema-mode #floating-header { display: flex; }
+        body.cinema-mode #chat-wrapper.minimized { 
+            width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-btn); 
+            right: 20px; bottom: 30px; cursor: pointer; overflow: visible; 
+        }
+        body.cinema-mode #chat-wrapper.minimized #chat-area, body.cinema-mode #chat-wrapper.minimized #input-area, body.cinema-mode #chat-wrapper.minimized #floating-header { display: none; }
+        body.cinema-mode #chat-wrapper.minimized #minimize-icon { display: flex; }
+
+        @media (max-width: 600px) { 
+            body.cinema-mode #chat-wrapper { width: 85%; right: 50%; transform: translateX(50%); bottom: 30px; height: 50%; } 
+        }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* --- OPTİMİZE EDİLMİŞ ARKA PLAN MODU (YENİ) --- */
+        body.bg-mode-active #video-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100% !important; 
+            z-index: 1; background: #000; border-bottom: none;
+        }
+        body.bg-mode-active #video-grid {
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; 
+            gap: 0; padding: 0; height: 100%;
+        }
+        body.bg-mode-active video {
+            flex: 1 1 50%; min-width: 50%; height: auto; max-height: 100%; 
+            border: none; border-radius: 0; object-fit: cover; box-shadow: none;
+        }
+        /* Glassmorphism Efekti */
+        body.bg-mode-active #chat-wrapper {
+            position: relative; z-index: 10; 
+            background: rgba(15, 12, 19, 0.4); /* Daha şeffaf */
+            backdrop-filter: blur(8px);
+        }
+        body.bg-mode-active #chat-area { background: transparent; background-image: none; }
+        body.bg-mode-active #app-header {
+            background: rgba(26, 22, 37, 0.6); backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        body.bg-mode-active #input-area { background: rgba(26, 22, 37, 0.6); }
+        body.bg-mode-active .message { backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    </style>
 </head>
 <body>
-<div id="fullscreen-layer"><button id="close-fs-btn" onclick="closeFullscreen()"><i class="fas fa-times"></i> Kapat</button><video id="fullscreen-video" autoplay playsinline></video></div>
-<div id="auth-screen">
-<img src="image_0.png" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:30px;border:4px solid var(--accent);box-shadow:0 0 30px var(--accent-glow);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
-<div class="auth-container">
-<div class="auth-tabs"><div class="auth-tab active" onclick="switchTab('login')">Giriş Yap</div><div class="auth-tab" onclick="switchTab('register')">Kayıt Ol</div></div>
-<div id="login-form" class="auth-form active"><input type="text" id="login-nick" class="login-input" placeholder="Kullanıcı Adı"><input type="password" id="login-pass" class="login-input" placeholder="Şifreniz"><button class="primary-btn" onclick="doLogin()">Giriş Yap</button></div>
-<div id="register-form" class="auth-form"><input type="text" id="reg-nick" class="login-input" placeholder="Kullanıcı Adı Belirle"><input type="password" id="reg-pass" class="login-input" placeholder="Şifre Belirle"><button class="primary-btn" onclick="doRegister()">Kayıt Ol</button></div>
-<div id="auth-msg" class="status-msg"></div></div></div>
-<div id="room-pass-screen" style="display:none;">
-<i class="fas fa-lock" style="font-size:60px;color:var(--accent);margin-bottom:25px;filter:drop-shadow(0 0 20px var(--accent-glow));"></i>
-<h3 style="margin-bottom:20px;color:var(--text-primary);font-weight:300;letter-spacing:1px;">Oda Güvenlik Şifresi</h3>
-<input type="password" id="room-pass" class="login-input" style="width:280px;" placeholder="Oda Şifresi"><button class="primary-btn" style="width:280px;margin-top:20px;" onclick="checkRoomPass()">Odaya Gir</button><div id="room-error" class="status-msg error"></div></div>
-<div id="main-container">
-<header id="app-header">
-<div class="header-info"><img src="image_0.png" class="header-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'"><div class="header-text"><h3>Mevlüt & Ayşegül</h3><span id="connection-status">Bağlandı</span></div></div>
-<div class="header-actions">
-<button id="toggle-video-btn" class="circle-btn" onclick="toggleVideoContainer()" title="Video Alanını Göster/Gizle"><i class="fas fa-eye"></i></button>
-<button class="circle-btn" onclick="toggleUserList()" title="Kişiler"><i class="fas fa-users"></i></button>
-<button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()" title="Mikrofon"><i class="fas fa-microphone-slash"></i></button>
-<button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()" title="Kamera"><i class="fas fa-video"></i></button>
-<button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()" title="Ekran Paylaş"><i class="fas fa-desktop"></i></button>
-</div></header>
-<div id="user-list-popup"><h4><i class="fas fa-circle" style="font-size:10px;color:var(--success);margin-right:8px;"></i> Aktif Kişiler</h4><ul id="user-list-content"></ul></div>
-<div id="video-container"><div id="video-grid"></div></div>
-<div id="chat-wrapper" onclick="handleWrapperClick()">
-<div id="notification-badge">0</div><div id="minimize-icon"><i class="fas fa-comment-dots"></i></div>
-<div id="floating-header"><span>Sohbet</span><i class="fas fa-chevron-down" id="minimize-btn" onclick="minimizeChat(event)"></i></div>
-<div id="chat-area"></div>
-<div id="input-area">
-<input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
-<button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-plus"></i></button>
-<input type="text" id="msg-input" placeholder="Mesaj yaz..." autocomplete="off">
-<button class="icon-btn" onclick="sendMessage()"><i class="fas fa-paper-plane" style="color:var(--accent)"></i></button>
-<button id="voice-msg-btn" onclick=""><i class="fas fa-microphone"></i></button>
-</div></div></div>
-<script src="/socket.io/socket.io.js"></script><script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-<script>
-if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{document.documentElement.style.setProperty('--app-height',`${window.visualViewport.height}px`);scrollToBottom()});document.documentElement.style.setProperty('--app-height',`${window.visualViewport.height}px`)}
-function isMobile(){return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}
-if(isMobile())document.getElementById('screen-share-btn').style.display='none';
-const socket=io();let myPeer,myPeerId,cameraStream=null,screenStream=null,currentActiveStream=null;let myNickname="";const ROOM_ID="ozel-oda-v1";const ROOM_PASS="mevlüthanayşegül";
-const videoGrid=document.getElementById('video-grid');const activeCalls={};const videoElements={};const userStreams={};
-const myVideo=document.createElement('video');myVideo.muted=true;myVideo.setAttribute('playsinline','');myVideo.autoplay=true;myVideo.className='camera-mode';
-function switchTab(t){document.querySelectorAll('.auth-tab').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.auth-form').forEach(e=>e.classList.remove('active'));document.getElementById('auth-msg').innerText="";if(t==='login'){document.querySelectorAll('.auth-tab')[0].classList.add('active');document.getElementById('login-form').classList.add('active')}else{document.querySelectorAll('.auth-tab')[1].classList.add('active');document.getElementById('register-form').classList.add('active')}}
-function doRegister(){socket.emit('register',document.getElementById('reg-nick').value.trim(),document.getElementById('reg-pass').value.trim())}
-function doLogin(){socket.emit('login',document.getElementById('login-nick').value.trim(),document.getElementById('login-pass').value.trim())}
-function showAuthMsg(m,t){const e=document.getElementById('auth-msg');e.innerText=m;e.className="status-msg "+t}
-socket.on('auth-error',m=>showAuthMsg(m,"error"));socket.on('register-success',m=>{showAuthMsg(m,"success");setTimeout(()=>switchTab('login'),1000)});
-socket.on('login-success',u=>{myNickname=u;document.getElementById('auth-screen').style.display='none';document.getElementById('room-pass-screen').style.display='flex'});
-function checkRoomPass(){if(document.getElementById('room-pass').value===ROOM_PASS){document.getElementById('room-pass-screen').style.display='none';startChatApp()}else{document.getElementById('room-error').innerText="Hatalı Şifre!"}}
-function startChatApp(){document.getElementById('main-container').style.display='flex';myPeer=new Peer(undefined,{path:'/peerjs',host:location.hostname,port:location.port||(location.protocol==='https:'?443:80),config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'}]}});myPeer.on('open',id=>{myPeerId=id;socket.emit('join-room',ROOM_ID,myPeerId,myNickname)});prepareMedia();document.getElementById('msg-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendMessage()})}
-function toggleVideoContainer(){const c=document.getElementById('video-container');const b=document.getElementById('toggle-video-btn');if(c.classList.contains('collapsed')){c.classList.remove('collapsed');b.innerHTML='<i class="fas fa-eye"></i>'}else{c.classList.add('collapsed');b.innerHTML='<i class="fas fa-eye-slash"></i>'}}
-function toggleUserList(){const l=document.getElementById('user-list-popup');l.style.display=(l.style.display==='flex')?'none':'flex'}
-socket.on('update-user-list',u=>{const l=document.getElementById('user-list-content');l.innerHTML="";u.forEach(x=>{const i=document.createElement('li');i.className=x.online?'online':'offline';let h='';if(x.online){if(x.cam)h+='<i class="fas fa-video media-icon" style="color:var(--accent)"></i>';if(x.screen)h+='<i class="fas fa-desktop media-icon" style="color:#3498db"></i>'}i.innerHTML=`<div class="status-dot"></div><span>${x.nickname}</span> <div class="media-icons">${h}</div>`;if(x.online&&(x.cam||x.screen)){i.onclick=()=>window.focusUserVideo(x.peerId)}l.appendChild(i)})});
-window.focusUserVideo=function(p){if(p===myPeerId&&currentActiveStream){openFullscreen(currentActiveStream);return}if(userStreams[p]){openFullscreen(userStreams[p]);return}if(videoElements[p]){openFullscreen(videoElements[p].srcObject);return}alert("Bağlantı bekleniyor veya kullanıcı yayında değil.")};
-function notifyMediaStatus(c,s){socket.emit('media-status',{cam:c,screen:s});if(c||s)socket.emit('stream-notify',{type:s?'screen':'camera',active:true})}
-socket.on('user-stream-changed',({peerId,type})=>{const v=videoElements[peerId];if(v){if(type==='screen')v.className='screen-mode';else v.className='camera-mode'}});
-function prepareMedia(){navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(s=>{cameraStream=s;cameraStream.getVideoTracks()[0].enabled=false;cameraStream.getAudioTracks()[0].enabled=false;currentActiveStream=cameraStream;userStreams[myPeerId]=cameraStream;myVideo.ondblclick=()=>openFullscreen(currentActiveStream);myPeer.on('call',c=>{c.answer(currentActiveStream);const v=document.createElement('video');v.setAttribute('playsinline','');v.autoplay=true;activeCalls[c.peer]=c;c.on('stream',st=>{userStreams[c.peer]=st;v.srcObject=st;v.ondblclick=()=>openFullscreen(st);addVideoStream(v,c.peer)})});socket.on('user-connected',uid=>connectToNewUser(uid))}).catch(()=>{document.getElementById('cam-toggle-btn').disabled=true;document.getElementById('mic-toggle-btn').disabled=true})}
-function connectToNewUser(uid){const c=myPeer.call(uid,currentActiveStream);const v=document.createElement('video');v.setAttribute('playsinline','');v.autoplay=true;activeCalls[uid]=c;c.on('stream',st=>{userStreams[uid]=st;v.srcObject=st;v.ondblclick=()=>openFullscreen(st);addVideoStream(v,uid)});c.on('close',()=>{v.remove();delete userStreams[uid]})}
-function toggleMic(){if(!cameraStream)return alert("Mikrofon yok!");const a=cameraStream.getAudioTracks()[0];const b=document.getElementById('mic-toggle-btn');a.enabled=!a.enabled;if(a.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-microphone"></i>'}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-microphone-slash"></i>'}}
-function toggleCamera(){if(!cameraStream)return alert("Kamera yok!");if(screenStream)stopScreenShare();const v=cameraStream.getVideoTracks()[0];v.enabled=!v.enabled;currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;myVideo.className='camera-mode';userStreams[myPeerId]=cameraStream;const b=document.getElementById('cam-toggle-btn');if(v.enabled){b.classList.add('active');b.innerHTML='<i class="fas fa-video-slash"></i>';if(!videoGrid.contains(myVideo))addVideoStream(myVideo,myPeerId);notifyMediaStatus(true,false);socket.emit('stream-changed','camera')}else{b.classList.remove('active');b.innerHTML='<i class="fas fa-video"></i>';myVideo.remove();notifyMediaStatus(false,false)}replaceTracksForEveryone(cameraStream)}
-async function toggleScreenShare(){if(isMobile())return;if(screenStream){stopScreenShare();return}try{screenStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});const m=cameraStream.getAudioTracks()[0];if(m&&m.enabled)screenStream.addTrack(m);document.getElementById('screen-share-btn').classList.add('screen-active');currentActiveStream=screenStream;myVideo.srcObject=screenStream;myVideo.className='screen-mode';userStreams[myPeerId]=screenStream;if(!videoGrid.contains(myVideo))addVideoStream(myVideo,myPeerId);notifyMediaStatus(false,true);socket.emit('stream-changed','screen');replaceTracksForEveryone(screenStream);screenStream.getVideoTracks()[0].onended=()=>stopScreenShare()}catch(e){}}
-function stopScreenShare(){if(!screenStream)return;screenStream.getVideoTracks()[0].stop();screenStream=null;document.getElementById('screen-share-btn').classList.remove('screen-active');currentActiveStream=cameraStream;myVideo.srcObject=cameraStream;myVideo.className='camera-mode';userStreams[myPeerId]=cameraStream;const c=cameraStream.getVideoTracks()[0];if(document.getElementById('cam-toggle-btn').classList.contains('active')){c.enabled=true;notifyMediaStatus(true,false);socket.emit('stream-changed','camera')}else{c.enabled=false;myVideo.remove();notifyMediaStatus(false,false)}replaceTracksForEveryone(cameraStream)}
-function replaceTracksForEveryone(str){const v=str.getVideoTracks()[0];const a=str.getAudioTracks()[0];for(let p in activeCalls){const s=activeCalls[p].peerConnection.getSenders();const vs=s.find(k=>k.track&&k.track.kind==='video');const as=s.find(k=>k.track&&k.track.kind==='audio');if(vs&&v)vs.replaceTrack(v);if(as&&a)as.replaceTrack(a)}}
-function addVideoStream(v,pid){v.addEventListener('loadedmetadata',()=>v.play());if(!videoGrid.contains(v))videoGrid.append(v);if(pid)videoElements[pid]=v;const c=document.getElementById('video-container');if(c.classList.contains('collapsed')){toggleVideoContainer()}v.play().catch(e=>{console.log("Autoplay hatası, sessiz deneniyor",e);v.muted=true;v.play()})}
-function openFullscreen(s){const v=document.getElementById('fullscreen-video');v.srcObject=s;document.getElementById('fullscreen-layer').style.display='flex';document.body.classList.add('cinema-mode');v.muted=false;v.play().catch(e=>console.log(e))}
-function closeFullscreen(){const v=document.getElementById('fullscreen-video');v.muted=true;document.getElementById('fullscreen-layer').style.display='none';document.body.classList.remove('cinema-mode');document.getElementById('chat-wrapper').classList.remove('minimized');document.getElementById('notification-badge').style.display='none'}
-let isChatMinimized=false;let unreadCount=0;
-function minimizeChat(e){e.stopPropagation();document.getElementById('chat-wrapper').classList.add('minimized');isChatMinimized=true}
-function handleWrapperClick(){if(isChatMinimized){document.getElementById('chat-wrapper').classList.remove('minimized');isChatMinimized=false;unreadCount=0;document.getElementById('notification-badge').style.display='none'}}
-socket.on('createMessage',d=>renderMessage(d));socket.on('load-history',h=>h.forEach(renderMessage));
-function sendMessage(){const v=document.getElementById('msg-input').value;if(v.trim()){socket.emit('message',v);document.getElementById('msg-input').value=''}}
-function renderMessage(d){if(isChatMinimized&&d.senderId!==socket.id){unreadCount++;const b=document.getElementById('notification-badge');b.innerText=unreadCount;b.style.display='flex'}const a=document.getElementById('chat-area');const m=d.senderId===socket.id;const div=document.createElement('div');div.className=`message ${m?'mine':'theirs'}`;if(d.type==='system-link'){div.innerHTML=`<span class="sender-name">${d.user}</span><div style="color:var(--text-secondary);font-style:italic;">${d.text}</div><div class="system-link-btn" onclick="window.focusUserVideo('${d.peerId}')">İZLE</div><div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`}else{let c=d.type==='text'?`<div>${d.content}</div>`:d.type==='image'?`<img src="${d.content}">`:`<audio controls src="${d.content}"></audio>`;div.innerHTML=`<span class="sender-name" style="${m?'display:none':''}">${d.user}</span>${c}<div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`}a.appendChild(div);a.scrollTop=a.scrollHeight}
-function sendImage(){const f=document.getElementById('file-input').files[0];if(f&&f.size<1e8){const r=new FileReader();r.onload=e=>socket.emit('image',e.target.result);r.readAsDataURL(f)}}
-const micBtn=document.getElementById('voice-msg-btn');let mediaRec;
-const startRec=e=>{if(e.cancelable)e.preventDefault();if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{mediaRec=new MediaRecorder(s);const c=[];mediaRec.start();micBtn.classList.add('recording');mediaRec.ondataavailable=e=>c.push(e.data);mediaRec.onstop=()=>{const r=new FileReader();r.onloadend=()=>socket.emit('voice',r.result);r.readAsDataURL(new Blob(c,{type:'audio/webm'}));s.getTracks().forEach(t=>t.stop())}})};
-const stopRec=e=>{if(e.cancelable)e.preventDefault();if(mediaRec&&mediaRec.state!=='inactive'){mediaRec.stop();micBtn.classList.remove('recording')}};
-micBtn.addEventListener('mousedown',startRec);micBtn.addEventListener('mouseup',stopRec);micBtn.addEventListener('touchstart',startRec);micBtn.addEventListener('touchend',stopRec);
-function scrollToBottom(){const d=document.getElementById('chat-area');d.scrollTop=d.scrollHeight}
-</script>
+
+    <div id="fullscreen-layer">
+        <button id="close-fs-btn" onclick="closeFullscreen()"><i class="fas fa-times"></i> Kapat</button>
+        <video id="fullscreen-video" autoplay playsinline></video>
+    </div>
+
+    <div id="auth-screen">
+        <img src="image_0.png" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin-bottom: 25px; border: 4px solid var(--accent); box-shadow: 0 0 20px rgba(142, 68, 173, 0.4);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchTab('login')">Giriş Yap</div>
+                <div class="auth-tab" onclick="switchTab('register')">Kayıt Ol</div>
+            </div>
+            <div id="login-form" class="auth-form active">
+                <input type="text" id="login-nick" class="login-input" placeholder="Kullanıcı Adı">
+                <input type="password" id="login-pass" class="login-input" placeholder="Şifreniz">
+                <button class="primary-btn" onclick="doLogin()">Giriş Yap</button>
+            </div>
+            <div id="register-form" class="auth-form">
+                <input type="text" id="reg-nick" class="login-input" placeholder="Kullanıcı Adı Belirle">
+                <input type="password" id="reg-pass" class="login-input" placeholder="Şifre Belirle">
+                <button class="primary-btn" onclick="doRegister()">Kayıt Ol</button>
+            </div>
+            <div id="auth-msg" class="status-msg"></div>
+        </div>
+    </div>
+
+    <div id="room-pass-screen" style="display: none;">
+        <i class="fas fa-lock" style="font-size: 50px; color: var(--accent); margin-bottom: 20px;"></i>
+        <h3 style="margin-bottom: 20px; color: var(--text-primary); font-weight: 300;">Oda Güvenlik Şifresi</h3>
+        <input type="password" id="room-pass" class="login-input" style="width: 250px;" placeholder="Oda Şifresi">
+        <button class="primary-btn" style="width: 250px; margin-top: 15px;" onclick="checkRoomPass()">Odaya Gir</button>
+        <div id="room-error" class="status-msg error"></div>
+    </div>
+
+    <div id="main-container">
+        <header id="app-header">
+            <div class="header-info">
+                <img src="image_0.png" class="header-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/134/134914.png'">
+                <div class="header-text">
+                    <h3>Mevlüt & Ayşegül</h3>
+                    <span id="connection-status">Bağlandı</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="circle-btn" onclick="toggleUserList()" title="Kişiler"><i class="fas fa-users"></i></button>
+                <button id="bg-mode-btn" class="circle-btn" onclick="toggleBackgroundMode()" title="Arka Plan Modu"><i class="fas fa-expand"></i></button>
+                <button id="mic-toggle-btn" class="circle-btn" onclick="toggleMic()" title="Mikrofon"><i class="fas fa-microphone-slash"></i></button>
+                <button id="cam-toggle-btn" class="circle-btn" onclick="toggleCamera()" title="Kamera"><i class="fas fa-video"></i></button>
+                <button id="screen-share-btn" class="circle-btn" onclick="toggleScreenShare()" title="Ekran Paylaş"><i class="fas fa-desktop"></i></button>
+            </div>
+        </header>
+
+        <div id="user-list-popup">
+            <h4 style="margin:0; padding:15px; background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1); font-size:14px;">Kişi Listesi</h4>
+            <ul id="user-list-content" style="list-style:none; padding:0; margin:0; max-height:250px; overflow-y:auto;"></ul>
+        </div>
+
+        <div id="video-container">
+            <div id="video-grid"></div>
+        </div>
+
+        <div id="chat-wrapper" onclick="handleWrapperClick()">
+            <div id="notification-badge">0</div>
+            <div id="minimize-icon"><i class="fas fa-comment-dots"></i></div>
+            <div id="floating-header">
+                <span>Sohbet</span>
+                <i class="fas fa-chevron-down" id="minimize-btn" onclick="minimizeChat(event)"></i>
+            </div>
+            <div id="chat-area"></div>
+            <div id="input-area">
+                <input type="file" id="file-input" hidden accept="image/*" onchange="sendImage()">
+                <button class="icon-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-plus"></i></button>
+                <input type="text" id="msg-input" placeholder="Mesaj yaz..." autocomplete="off">
+                <button class="icon-btn" onclick="sendMessage()"><i class="fas fa-paper-plane" style="color: var(--accent)"></i></button>
+                <button id="voice-msg-btn" onclick=""><i class="fas fa-microphone"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    
+    <script>
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
+                scrollToBottom();
+            });
+            document.documentElement.style.setProperty('--app-height', `${window.visualViewport.height}px`);
+        }
+
+        function isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); }
+        if (isMobile()) document.getElementById('screen-share-btn').style.display = 'none';
+
+        const socket = io();
+        let myPeer, myPeerId, cameraStream = null, screenStream = null, currentActiveStream = null;
+        let myNickname = "";
+        const ROOM_ID = "ozel-oda-v1";
+        const ROOM_PASS = "mevlüthanayşegül"; 
+
+        const videoGrid = document.getElementById('video-grid');
+        const activeCalls = {};
+        const videoElements = {}; 
+        const userStreams = {}; 
+        
+        const myVideo = document.createElement('video');
+        myVideo.muted = true; myVideo.setAttribute('playsinline', ''); myVideo.autoplay = true;
+        myVideo.className = 'camera-mode';
+
+        // AUTH
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById('auth-msg').innerText = "";
+            if (tab === 'login') { document.querySelectorAll('.auth-tab')[0].classList.add('active'); document.getElementById('login-form').classList.add('active'); } 
+            else { document.querySelectorAll('.auth-tab')[1].classList.add('active'); document.getElementById('register-form').classList.add('active'); }
+        }
+        function doRegister() { socket.emit('register', document.getElementById('reg-nick').value.trim(), document.getElementById('reg-pass').value.trim()); }
+        function doLogin() { socket.emit('login', document.getElementById('login-nick').value.trim(), document.getElementById('login-pass').value.trim()); }
+        function showAuthMsg(msg, type) { const el = document.getElementById('auth-msg'); el.innerText = msg; el.className = "status-msg " + type; }
+        
+        socket.on('auth-error', msg => showAuthMsg(msg, "error"));
+        socket.on('register-success', msg => { showAuthMsg(msg, "success"); setTimeout(() => switchTab('login'), 1000); });
+        socket.on('login-success', (username) => {
+            myNickname = username;
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('room-pass-screen').style.display = 'flex';
+        });
+        function checkRoomPass() {
+            if (document.getElementById('room-pass').value === ROOM_PASS) {
+                document.getElementById('room-pass-screen').style.display = 'none';
+                startChatApp();
+            } else { document.getElementById('room-error').innerText = "Hatalı Şifre!"; }
+        }
+
+        function startChatApp() {
+            document.getElementById('main-container').style.display = 'flex';
+            myPeer = new Peer(undefined, { 
+                path: '/peerjs', 
+                host: location.hostname, 
+                port: location.port || (location.protocol === 'https:' ? 443 : 80),
+                config: { iceServers: [ { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' } ] }
+            });
+
+            myPeer.on('open', id => { myPeerId = id; socket.emit('join-room', ROOM_ID, myPeerId, myNickname); });
+            prepareMedia();
+            document.getElementById('msg-input').addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
+        }
+
+        function checkVideoVisibility() {
+            const container = document.getElementById('video-container');
+            // Bg modundaysak container her zaman görünür kalsın
+            if (document.body.classList.contains('bg-mode-active')) {
+                container.classList.add('visible');
+            } else {
+                if (videoGrid.childElementCount > 0) container.classList.add('visible');
+                else container.classList.remove('visible');
+            }
+        }
+        function toggleUserList() { const list = document.getElementById('user-list-popup'); list.style.display = (list.style.display === 'flex') ? 'none' : 'flex'; }
+        
+        // --- ARKA PLAN MODU TOGGLE FONKSİYONU ---
+        function toggleBackgroundMode() {
+            const body = document.body;
+            const btnIcon = document.querySelector('#bg-mode-btn i');
+            const bgBtn = document.getElementById('bg-mode-btn');
+
+            body.classList.toggle('bg-mode-active');
+
+            if (body.classList.contains('bg-mode-active')) {
+                btnIcon.classList.remove('fa-expand');
+                btnIcon.classList.add('fa-compress');
+                bgBtn.classList.add('active');
+            } else {
+                btnIcon.classList.remove('fa-compress');
+                btnIcon.classList.add('fa-expand');
+                bgBtn.classList.remove('active');
+                scrollToBottom();
+            }
+            checkVideoVisibility();
+        }
+
+        socket.on('update-user-list', (users) => {
+            const list = document.getElementById('user-list-content'); list.innerHTML = "";
+            users.forEach(u => {
+                const li = document.createElement('li');
+                li.className = u.online ? 'online' : 'offline';
+                let iconsHtml = '';
+                if (u.online) {
+                    if (u.cam) iconsHtml += `<i class="fas fa-video" style="color:var(--accent);margin-left:auto;"></i>`;
+                    if (u.screen) iconsHtml += `<i class="fas fa-desktop" style="color:#3498db;margin-left:5px;"></i>`;
+                }
+                li.innerHTML = `<div class="status-dot"></div><span>${u.nickname}</span> ${iconsHtml}`;
+                if(u.online && (u.cam || u.screen)) { li.onclick = () => window.focusUserVideo(u.peerId); }
+                list.appendChild(li);
+            });
+        });
+
+        window.focusUserVideo = function(pid) {
+            if (pid === myPeerId && currentActiveStream) { openFullscreen(currentActiveStream); return; }
+            if (userStreams[pid]) { openFullscreen(userStreams[pid]); return; }
+            if (videoElements[pid]) { openFullscreen(videoElements[pid].srcObject); return; }
+            alert("Bağlantı bekleniyor veya kullanıcı yayında değil.");
+        };
+
+        function notifyMediaStatus(c, s) { socket.emit('media-status', { cam: c, screen: s }); if(c || s) socket.emit('stream-notify', { type: s?'screen':'camera', active: true }); }
+        
+        socket.on('user-stream-changed', ({ peerId, type, active }) => {
+            const video = videoElements[peerId];
+            if (video) {
+                if (type === 'screen') video.className = 'screen-mode';
+                else video.className = 'camera-mode';
+            }
+        });
+
+        function prepareMedia() {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+                cameraStream = stream;
+                cameraStream.getVideoTracks()[0].enabled = false;
+                cameraStream.getAudioTracks()[0].enabled = false;
+                currentActiveStream = cameraStream;
+                userStreams[myPeerId] = cameraStream; 
+                myVideo.ondblclick = () => openFullscreen(currentActiveStream);
+
+                myPeer.on('call', call => {
+                    call.answer(currentActiveStream);
+                    const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
+                    activeCalls[call.peer] = call;
+                    call.on('stream', s => {
+                        userStreams[call.peer] = s; video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                        addVideoStream(video, call.peer);
+                    });
+                });
+                socket.on('user-connected', (uid) => connectToNewUser(uid));
+            }).catch(e => {
+                document.getElementById('cam-toggle-btn').disabled = true; document.getElementById('mic-toggle-btn').disabled = true;
+            });
+        }
+
+        function connectToNewUser(uid) {
+            const call = myPeer.call(uid, currentActiveStream);
+            const video = document.createElement('video'); video.setAttribute('playsinline', ''); video.autoplay = true;
+            activeCalls[uid] = call;
+            call.on('stream', s => {
+                userStreams[uid] = s; video.srcObject = s; video.ondblclick = () => openFullscreen(s);
+                addVideoStream(video, uid);
+            });
+            call.on('close', () => { video.remove(); delete userStreams[uid]; checkVideoVisibility(); });
+        }
+
+        function toggleMic() {
+            if(!cameraStream) return alert("Mikrofon yok!");
+            const a = cameraStream.getAudioTracks()[0]; const btn = document.getElementById('mic-toggle-btn');
+            a.enabled = !a.enabled;
+            if(a.enabled) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-microphone"></i>'; }
+            else { btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-microphone-slash"></i>'; }
+        }
+
+        function toggleCamera() {
+            if(!cameraStream) return alert("Kamera yok!");
+            if(screenStream) stopScreenShare();
+            const v = cameraStream.getVideoTracks()[0];
+            v.enabled = !v.enabled; 
+            currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
+            userStreams[myPeerId] = cameraStream;
+            
+            const btn = document.getElementById('cam-toggle-btn');
+            if(v.enabled) { 
+                btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-video-slash"></i>';
+                if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId); 
+                notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
+            } else { 
+                btn.classList.remove('active'); btn.innerHTML = '<i class="fas fa-video"></i>';
+                myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false); 
+            }
+            replaceTracksForEveryone(cameraStream);
+        }
+
+        async function toggleScreenShare() {
+            if(isMobile()) return;
+            if(screenStream) { stopScreenShare(); return; }
+            try {
+                screenStream = await navigator.mediaDevices.getDisplayMedia({video:true, audio:false});
+                const mic = cameraStream.getAudioTracks()[0]; if(mic && mic.enabled) screenStream.addTrack(mic);
+                document.getElementById('screen-share-btn').classList.add('screen-active');
+                currentActiveStream = screenStream; myVideo.srcObject = screenStream; myVideo.className = 'screen-mode';
+                userStreams[myPeerId] = screenStream;
+                if(!videoGrid.contains(myVideo)) addVideoStream(myVideo, myPeerId);
+                checkVideoVisibility(); notifyMediaStatus(false,true); socket.emit('stream-changed', 'screen');
+                replaceTracksForEveryone(screenStream);
+                screenStream.getVideoTracks()[0].onended = () => stopScreenShare();
+            } catch(e){}
+        }
+
+        function stopScreenShare() {
+            if(!screenStream) return;
+            screenStream.getVideoTracks()[0].stop(); screenStream = null;
+            document.getElementById('screen-share-btn').classList.remove('screen-active');
+            currentActiveStream = cameraStream; myVideo.srcObject = cameraStream; myVideo.className = 'camera-mode';
+            userStreams[myPeerId] = cameraStream;
+            const cam = cameraStream.getVideoTracks()[0];
+            if(document.getElementById('cam-toggle-btn').classList.contains('active')) {
+                cam.enabled = true; notifyMediaStatus(true,false); socket.emit('stream-changed', 'camera');
+            } else {
+                cam.enabled = false; myVideo.remove(); checkVideoVisibility(); notifyMediaStatus(false,false);
+            }
+            replaceTracksForEveryone(cameraStream);
+        }
+
+        function replaceTracksForEveryone(str) {
+            const v = str.getVideoTracks()[0]; const a = str.getAudioTracks()[0];
+            for(let p in activeCalls) {
+                const s = activeCalls[p].peerConnection.getSenders();
+                const vs = s.find(k=>k.track&&k.track.kind==='video'); const as = s.find(k=>k.track&&k.track.kind==='audio');
+                if(vs&&v) vs.replaceTrack(v); if(as&&a) as.replaceTrack(a); 
+            }
+        }
+        function addVideoStream(video, pid) {
+            video.addEventListener('loadedmetadata', ()=>video.play());
+            if(!videoGrid.contains(video)) videoGrid.append(video);
+            if(pid) videoElements[pid] = video;
+            checkVideoVisibility();
+        }
+
+        function openFullscreen(stream) {
+            const v = document.getElementById('fullscreen-video'); v.srcObject = stream;
+            document.getElementById('fullscreen-layer').style.display = 'flex';
+            document.body.classList.add('cinema-mode');
+            v.muted = false; v.play().catch(e => console.log("Oynatma hatası:", e));
+        }
+        function closeFullscreen() {
+            const v = document.getElementById('fullscreen-video'); v.muted = true;
+            document.getElementById('fullscreen-layer').style.display = 'none';
+            document.body.classList.remove('cinema-mode');
+            const wrapper = document.getElementById('chat-wrapper');
+            wrapper.classList.remove('minimized');
+            document.getElementById('notification-badge').style.display = 'none';
+        }
+
+        let isChatMinimized = false; let unreadCount = 0;
+        function minimizeChat(e) { e.stopPropagation(); document.getElementById('chat-wrapper').classList.add('minimized'); isChatMinimized = true; }
+        function handleWrapperClick() {
+            if (isChatMinimized) {
+                document.getElementById('chat-wrapper').classList.remove('minimized');
+                isChatMinimized = false; unreadCount = 0;
+                document.getElementById('notification-badge').style.display = 'none';
+            }
+        }
+
+        socket.on('createMessage', data => renderMessage(data));
+        socket.on('load-history', history => history.forEach(renderMessage));
+        function sendMessage() {
+            const val = document.getElementById('msg-input').value;
+            if(val.trim()) { socket.emit('message', val); document.getElementById('msg-input').value = ''; }
+        }
+        function renderMessage(data) {
+            if (isChatMinimized && data.senderId !== socket.id) {
+                unreadCount++; const b = document.getElementById('notification-badge'); b.innerText = unreadCount; b.style.display = 'flex';
+            }
+            const area = document.getElementById('chat-area');
+            const isMine = data.senderId === socket.id;
+            const div = document.createElement('div');
+            div.className = `message ${isMine ? 'mine' : 'theirs'}`;
+            
+            if (data.type === 'system-link') {
+                div.innerHTML = `<span class="sender-name">${data.user}</span><div style="color:var(--text-secondary); font-style:italic;">${data.text}</div><div class="system-link-btn" onclick="window.focusUserVideo('${data.peerId}')">İZLE</div><div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
+            } else {
+                let content = data.type === 'text' ? `<div>${data.content}</div>` : 
+                              data.type === 'image' ? `<img src="${data.content}">` : 
+                              `<audio controls src="${data.content}"></audio>`;
+                div.innerHTML = `<span class="sender-name" style="${isMine?'display:none':''}">${data.user}</span>${content}<div style="font-size:10px; opacity:0.7; text-align:right;">${data.time}</div>`;
+            }
+            area.appendChild(div); area.scrollTop = area.scrollHeight;
+        }
+        function sendImage() {
+            const f = document.getElementById('file-input').files[0];
+            if(f && f.size < 1e8) { const r = new FileReader(); r.onload = e => socket.emit('image', e.target.result); r.readAsDataURL(f); }
+        }
+        const micBtn = document.getElementById('voice-msg-btn');
+        let mediaRec;
+        const startRec = (e) => {
+            if(e.cancelable) e.preventDefault(); if(!navigator.mediaDevices) return;
+            navigator.mediaDevices.getUserMedia({audio:true}).then(s => {
+                mediaRec = new MediaRecorder(s); const chunks = []; mediaRec.start(); micBtn.classList.add('recording');
+                mediaRec.ondataavailable = e => chunks.push(e.data);
+                mediaRec.onstop = () => { const r = new FileReader(); r.onloadend = () => socket.emit('voice', r.result); r.readAsDataURL(new Blob(chunks, {type:'audio/webm'})); s.getTracks().forEach(t=>t.stop()); };
+            });
+        };
+        const stopRec = (e) => { if(e.cancelable) e.preventDefault(); if(mediaRec && mediaRec.state !== 'inactive') { mediaRec.stop(); micBtn.classList.remove('recording'); } };
+        micBtn.addEventListener('mousedown', startRec); micBtn.addEventListener('mouseup', stopRec);
+        micBtn.addEventListener('touchstart', startRec); micBtn.addEventListener('touchend', stopRec);
+        function scrollToBottom() { const d = document.getElementById('chat-area'); d.scrollTop = d.scrollHeight; }
+    </script>
 </body>
 </html>
