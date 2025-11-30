@@ -12,7 +12,7 @@ const { ExpressPeerServer } = require('peer');
 const ROOM_PASS = process.env.ODA_SIFRESI; 
 
 if (!ROOM_PASS) {
-    console.warn("UYARI: ODA_SIFRESI ayarlanmamış!");
+    console.warn("UYARI: ODA_SIFRESI environment variable olarak ayarlanmamış!");
 }
 
 app.use(express.static('public'));
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
         socket.emit('load-history', messageHistory);
         socket.to(roomId).emit('user-connected', peerId, nickname);
 
-        // --- YENİ: Yazıyor Göstergesi ---
+        // Yazıyor... özelliği
         socket.on('typing', () => {
             socket.to(roomId).emit('displayTyping', { userId: socket.id, nickname: nickname });
         });
@@ -76,15 +76,14 @@ io.on('connection', (socket) => {
             socket.to(roomId).emit('user-stream-changed', { peerId: peerId, type: type });
         });
 
-        // MESAJ İŞLEME (GÜNCELLENDİ: Link Preview + Reply)
+        // MESAJ İŞLEME: Link Önizleme ve Yanıtlama
         const handleMessage = async (type, payload) => {
             let content = "";
             let replyTo = null;
 
-            // Payload string mi obje mi kontrol et
             if (typeof payload === 'object' && payload !== null && type === 'text') {
                 content = payload.content;
-                replyTo = payload.replyTo; // { user: 'Ali', content: 'Merhaba' }
+                replyTo = payload.replyTo;
             } else {
                 content = payload;
             }
@@ -100,11 +99,11 @@ io.on('connection', (socket) => {
                 content, 
                 senderId: socket.id, 
                 time: getTime(),
-                replyTo: replyTo, // Yanıt bilgisini ekle
+                replyTo: replyTo,
                 preview: null 
             };
 
-            // Link Önizleme Kontrolü (Sadece text mesajlarda)
+            // Link varsa bilgilerini çek
             if (type === 'text') {
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 const urls = content.match(urlRegex);
@@ -113,8 +112,8 @@ io.on('connection', (socket) => {
                         const { result } = await ogs({ url: urls[0] });
                         if (result.success) {
                             msgData.preview = {
-                                title: result.ogTitle || result.twitterTitle,
-                                description: result.ogDescription || result.twitterDescription,
+                                title: result.ogTitle || result.twitterTitle || result.requestUrl,
+                                description: result.ogDescription || result.twitterDescription || '',
                                 image: (result.ogImage && result.ogImage[0] && result.ogImage[0].url) || 
                                        (result.twitterImage && result.twitterImage[0] && result.twitterImage[0].url)
                             };
