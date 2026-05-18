@@ -39,7 +39,7 @@
 #image-modal img {max-width:95%;max-height:95%;border-radius:5px;box-shadow:0 0 20px rgba(0,0,0,0.5);}
 #close-img-btn{position:absolute;top:20px;right:20px;color:white;font-size:30px;cursor:pointer;background:none;border:none;}
 #minimize-icon{display:none;width:100%;height:100%;justify-content:center;align-items:center;font-size:24px}#floating-header{display:none;justify-content:space-between;align-items:center;padding:12px 20px;background:rgba(30,25,40,0.9);border-top-left-radius:15px;border-top-right-radius:15px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1)}#notification-badge{position:absolute;top:-5px;right:-5px;background:var(--d);font-size:12px;font-weight:bold;width:24px;height:24px;border-radius:50%;display:none;justify-content:center;align-items:center;border:2px solid var(--bg);animation:b 0.5s}body.cinema-mode #chat-wrapper{position:fixed;right:20px;bottom:20px;width:340px;height:500px;background:rgba(15,12,19,0.85);backdrop-filter:blur(15px);border-radius:15px;z-index:5001;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.6)}body.cinema-mode #floating-header{display:flex}body.cinema-mode #chat-wrapper.minimized{width:60px;height:60px;border-radius:50%;background:var(--ac-grad);right:20px;bottom:30px;cursor:pointer;box-shadow:0 5px 20px rgba(142,68,173,0.5);overflow:visible}body.cinema-mode #chat-wrapper.minimized #chat-area,body.cinema-mode #chat-wrapper.minimized #input-container-wrapper,body.cinema-mode #chat-wrapper.minimized #floating-header{display:none}body.cinema-mode #chat-wrapper.minimized #minimize-icon{display:flex}.remember-container{display:flex;align-items:center;gap:8px;margin-bottom:15px;font-size:14px;color:var(--sec);justify-content:center}.remember-container input{width:16px;height:16px;cursor:pointer}#logout-btn{background:rgba(231,76,60,0.2);color:var(--d)}#logout-btn:hover{background:var(--d);color:white}@media (max-width:600px){body.cinema-mode #chat-wrapper{width:90%;right:5%;bottom:30px;height:50%}body.cinema-mode #chat-wrapper.minimized{right:20px;bottom:80px;width:50px;height:50px}.auth-container{width:85%}#input-area{padding:10px 5px;gap:4px}.icon-btn{width:34px;height:34px;font-size:18px}#voice-msg-btn{width:40px;height:40px;font-size:18px}#input-area input{padding:10px 15px;font-size:14px}#emoji-picker{width:90%;left:5%;bottom:70px}}@keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}@keyframes p{0%{box-shadow:0 0 0 0 rgba(231,76,60,0.7)}70%{transform:scale(1.1);box-shadow:0 0 0 10px rgba(231,76,60,0)}100%{box-shadow:0 0 0 0 rgba(231,76,60,0)}}
-</style>
+.yt-embed-wrap{position:relative;width:100%;max-width:320px;border-radius:12px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-top:6px}.yt-embed-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px}</style>
 </head>
 <body>
 <div id="image-modal"><button id="close-img-btn" onclick="closeImageModal()"><i class="fas fa-times"></i></button><img id="modal-img" src=""></div>
@@ -181,10 +181,12 @@ function toggleInputButtons() {
     else { sendBtn.style.display = 'none'; voiceBtn.style.display = 'flex'; }
 }
 socket.on('createMessage',d=>renderMessage(d));socket.on('load-history',h=>h.forEach(renderMessage));
+function getYouTubeId(url){var r=/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;var m=url.match(r);return m?m[1]:null}
 function sendMessage(content){
     const inp = document.getElementById('msg-input');
     const val = content || inp.value.trim();
     if(val){
+        if(val.startsWith('/yt ')){const ytUrl=val.slice(4).trim();if(ytUrl){socket.emit('youtube',ytUrl);inp.value='';toggleInputButtons();socket.emit('stop-typing');}return;}
         if(currentReply) {
             socket.emit('message', { content: val, replyTo: currentReply });
             cancelReply();
@@ -237,7 +239,7 @@ function renderMessage(d){
     if(d.type==='text'&&d.content.startsWith('::SYS::')){const p=d.content.split('::');div.innerHTML=`<span class="sender-name">${d.user}</span><div style="color:var(--sec);font-style:italic;">${p[3]}</div><div class="system-link-btn" onclick="window.focusUserVideo('${p[2]}')">İZLE</div><div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`}
     else{
         let processedContent = d.type==='text' ? linkify(d.content) : d.content;
-        let c=d.type==='text'?`<div>${processedContent}</div>`:d.type==='image'?`<img src="${d.content}" onclick="showImageModal(this.src)">`:`<audio controls src="${d.content}"></audio>`;
+        let c=d.type==='text'?`<div>${processedContent}</div>`:d.type==='image'?`<img src="${d.content}" onclick="showImageModal(this.src)">`:d.type==='yt'?(()=>{const vid=getYouTubeId(d.content);return vid?`<div class="yt-embed-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${vid}?autoplay=0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`:`<div><a href="${d.content}" target="_blank">${d.content}</a></div>`})():`<audio controls src="${d.content}"></audio>`;
         div.innerHTML=`<span class="sender-name" style="${m?'display:none':''}">${d.user}</span>${replyHtml}${c}${linkPreviewHtml}<div style="font-size:10px;opacity:0.7;text-align:right;">${d.time}</div>`
     }
     a.appendChild(div);a.scrollTop=a.scrollHeight

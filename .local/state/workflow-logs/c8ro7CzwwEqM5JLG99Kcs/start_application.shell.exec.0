@@ -1,0 +1,6 @@
+
+> local-chat@1.0.0 start
+> node server.js
+
+[1G[0KUYARI: ODA_SIFRESI environment variable olarak ayarlanmamış!
+Sunucu 5000 portunda çalışıyor.

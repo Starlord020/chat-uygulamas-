@@ -132,6 +132,7 @@ io.on('connection', (socket) => {
         socket.on('message', m => handleMessage('text', m));
         socket.on('image', i => handleMessage('image', i));
         socket.on('voice', v => handleMessage('audio', v));
+        socket.on('youtube', url => handleMessage('yt', url));
 
         socket.on('disconnect', () => {
             delete onlineSessions[socket.id]; 
@@ -153,5 +154,5 @@ io.on('connection', (socket) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => { console.log(`Sunucu ${PORT} portunda çalışıyor.`); });
+const PORT = process.env.PORT || 5000;
+http.listen(PORT, '0.0.0.0', () => { console.log(`Sunucu ${PORT} portunda çalışıyor.`); });
